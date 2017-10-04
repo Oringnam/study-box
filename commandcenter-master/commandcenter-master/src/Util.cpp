@@ -217,7 +217,7 @@ int Util::GetPlayer(const sc2::Unit & unit)
 
 bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
 {
-    if (IsWorkerType(type)) { return false; }
+    if (IsWorkerType(type)) { return true; }
     if (IsSupplyProviderType(type)) { return false; }
     if (bot.Data(type).isBuilding) { return false; }
 

@@ -21,3 +21,31 @@ TechTree.cpp	==> initUnitTypeData() 함수 내
 
 stManager.cpp line 164~
 		==> 전략 반복 진행 하기 위한 부분 (아직 미작성)
+
+2017.10.04
+** 동작 원리 분석 : onStart 실행 후, onFrame이 반복 실행. (스레드 형태로 반복 콜을 하는듯)
+** 반복생산은 BuildOrderQueue 에서 m_queue가 비면 다시 실행시키는 방식으로?
+	--> 그 위치는 아마도 ProductionManager.cpp 의 line 50, manageBuildOrderQueue() 함수 내
+
+** Utill.cpp의 line 218
+bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
+{
+    
+	if (IsWorkerType(type)) { return true; }
+    
+	if (IsSupplyProviderType(type)) { return false; }
+    
+	if (bot.Data(type).isBuilding) { return false; }
+
+ 
+   
+	if (type == sc2::UNIT_TYPEID::ZERG_EGG) { return false; }
+    
+	if (type == sc2::UNIT_TYPEID::ZERG_LARVA) { return false; }
+
+  
+  
+	return true;
+
+}
+첫번째, 일꾼의 타입을 true로 변경했더니, 정찰해온 일꾼들을 공격함. 그렇지만 진짜 공격유닛은 공격하지 않는다.

@@ -13,6 +13,7 @@
 
 int main(int argc, char* argv[]) 
 {
+		// test
     sc2::Coordinator coordinator;
     if (!coordinator.LoadSettings(argc, argv)) 
     {

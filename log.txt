@@ -1,0 +1,23 @@
+2017.10.03
+main.cpp	==> line. 72 이후 함수 호출을, 인공지능 두개로 변경
+		-  함수 정보 (변경 내용, 주석이 변경 전)
+coordinator.SetParticipants({
+        
+	CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
+		
+	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &enemybot)
+     
+	//   CreateComputer(Util::GetRaceFromString(enemyRaceString))
+    
+});
+
+TechTree.cpp	==> initUnitTypeData() 함수 내
+		- m_upgradeData[0] = TypeData(); 을 m_unitTypeData[0] = TypeData(); 로 수정
+		==> const TypeData & TechTree::getData(const sc2::UpgradeID & type)  const 함수 내
+		- return m_unitTypeData.at(0); 을 return m_upgradeData.at(0); 로 수정
+
+
+**참고 : 특정 종족에 대한 전략 만들고 싶다면, UseEnemySpecificStrategy를 Strategy 안에(StManager 122 참조)
+
+stManager.cpp line 164~
+		==> 전략 반복 진행 하기 위한 부분 (아직 미작성)

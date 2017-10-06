@@ -66,3 +66,91 @@ onFrame에 반복생산 구문을 넣기 위해, 변수 재조정 필요
 ** 대부분의 로직이 존재하는 클래스는 CCBot을 가지고 있음
 
 // 다음 과제, 유닛이 모이기 전에 공격가는거 안하도록 혹은 일꾼의 공격성을 줄이되, 정찰온 일꾼은 방어하는 형식으로
+
+** 적 정찰을 방어하기
+- 일꾼의 공격성을 제거하였을 경우, 공격 유닛이 없었다면, ScoutDefenseSquad가 형성이 안됨.
+- 그렇기 때문에 기지가 부셔질 때까지 방치하는것.
+- 대안 ; 공격 유닛이 없다면, 일꾼 하나를 공격 유닛으로 넣는다?
+
+* CombatCommander의 enemyUnitsInRegion은 매우 중요 (내 영역 안의 적의 수를 파악할 수 있다.)
+
+** 적 정찰 일꾼으로 방어하기
+- 이전에 했던, 일꾼의 공격성 false로 되돌리기 (Util.cpp)
+CombatCommander.cpp 의 line 110~ updateScoutDefenseSquad() 함수 내
+- if (m_combatUnits.empty()) 구문 블럭
+- line 147
+//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		UnitTag workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+입력 변수 수정. (m_combatUnits 의 필요성을 못느낌. 아마도 실수일 거라 생각)
+
+CombatCommander.h 함수 정보 변경
+ UnitTag         findClosestDefender(const Squad & defenseSquad, const sc2::Point2D & pos);
+//    UnitTag         findClosestWorkerTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target);
+
+
+이에 맞추어서 함수 정보 또한 변경 (CombatCommander.cpp line 446 for문)
+   // for (auto & unitTag : unitsToAssign)
+	for(auto & unitTag : m_bot.UnitInfo().getUnits(Players::Self))
+
+
+
+- 함수 정리	updateScoutDefenseSquad()
+	// if there's an enemy worker in our region then assign someone to chase him
+	bool assignScoutDefender = (enemyUnitsInRegion.size() == 1) && Util::IsWorker(*m_bot.GetUnit(enemyUnitsInRegion[0]));
+함수 앞쪽으로 이동
+
+
+
+- updateScoutDefenseSquad() 함수 내, 정찰병 제재 유닛 선정 방식
+ ( 병력이 없는 경우, 병력이 있는 경우 )
+		UnitTag workerDefenderTag;
+		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}
+수정
+
+==> 새로운 findClosestCombatTo() 함수
+UnitTag CombatCommander::findClosestCombatTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target)
+{
+	UnitTag ret = 0;
+	float closestDist = std::numeric_limits<float>::max();
+
+	// for each of our workers
+	// for (auto & unitTag : unitsToAssign)
+	for (auto & unitTag : unitsToAssign)
+	{
+		auto unit = m_bot.GetUnit(unitTag);
+		BOT_ASSERT(unit, "unit to assign was null");
+
+		float dist = Util::Dist(unit->pos, target);
+
+		if (dist < closestDist)
+		{
+			ret = unitTag;
+			dist = closestDist;
+		}
+	}
+
+	return ret;
+}
+
+
+
+******** 실험중 에러 발생
+!Assert:   builderUnit
+File:      c:\users\xonao\dropbox\sc2\commandcenter-master\commandcenter-master\src\buildingmanager.cpp
+Message:   null builder unit
+Line:      152
+Time:      06-10-2017 21-07-48
+
+*******************
+
+
+다음 과제 ; 위 에러 확인 / 빌드 확립 / 두개의 프로젝트로 구분(나의 빌드/ 상대 빌드 )

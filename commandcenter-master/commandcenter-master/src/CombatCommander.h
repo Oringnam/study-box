@@ -22,7 +22,9 @@ class CombatCommander
     bool            isSquadUpdateFrame();
 
     UnitTag         findClosestDefender(const Squad & defenseSquad, const sc2::Point2D & pos);
-    UnitTag         findClosestWorkerTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target);
+//    UnitTag         findClosestWorkerTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target);
+	UnitTag         findClosestWorkerTo(const sc2::Point2D & target);
+	UnitTag         findClosestCombatTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target);
 
     sc2::Point2D    getMainAttackLocation();
 

@@ -8,7 +8,7 @@
 
     "Game Info" :
     {
-        "BotRace"                   : "Terran",
+        "BotRace"                   : "Zerg",
         "EnemyRace"                 : "Terran",
         "MapFile"                   : "(2)Bel'ShirVestigeLE (Void).SC2Map"
     },
@@ -54,7 +54,7 @@
     {
         "Protoss"                   : "Protoss_ZealotRush",
         "Terran"                    : "Terran_MarineRush",
-        "Zerg"                      : "Zerg_2HatchRoach",
+        "Zerg"                      : "Zerg_ZerglingRush",
         
         "ScoutHarassEnemy"          : true,
         

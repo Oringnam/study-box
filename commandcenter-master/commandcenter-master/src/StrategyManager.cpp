@@ -105,7 +105,7 @@ void StrategyManager::readStrategyFile(const std::string & filename)
     // Parse the Strategy Options
     if (doc.HasMember("Strategy") && doc["Strategy"].IsObject())
     {
-        const rapidjson::Value & strategy = doc["Strategy"];
+		const rapidjson::Value & strategy = doc["Strategy"];
 
         // read in the various strategic elements
         JSONTools::ReadBool("ScoutHarassEnemy", strategy, m_bot.Config().ScoutHarassEnemy);

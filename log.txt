@@ -49,3 +49,20 @@ bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
 
 }
 첫번째, 일꾼의 타입을 true로 변경했더니, 정찰해온 일꾼들을 공격함. 그렇지만 진짜 공격유닛은 공격하지 않는다.
+
+
+2017.10.6
+StrategyManager 헤더와 소스 수정 중.
+onFrame에 반복생산 구문을 넣기 위해, 변수 재조정 필요
+==> 아니엇음, ProductionManager.cpp line 50~ manageBuildOrderQueue() 함수 내에서 동작 실험 (ProductionManager의 onFrame()에서 호출되는 함수)
+// if there is nothing in the queue, oh well
+    if (m_queue.isEmpty())
+    {
+		setBuildOrder(m_bot.Strategy().getOpeningBookBuildOrder());
+        return;
+    }
+
+
+** 대부분의 로직이 존재하는 클래스는 CCBot을 가지고 있음
+
+// 다음 과제, 유닛이 모이기 전에 공격가는거 안하도록 혹은 일꾼의 공격성을 줄이되, 정찰온 일꾼은 방어하는 형식으로

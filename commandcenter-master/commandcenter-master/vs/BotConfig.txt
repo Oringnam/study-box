@@ -8,7 +8,7 @@
 
     "Game Info" :
     {
-        "BotRace"                   : "Protoss",
+        "BotRace"                   : "Terran",
         "EnemyRace"                 : "Terran",
         "MapFile"                   : "(2)Bel'ShirVestigeLE (Void).SC2Map"
     },

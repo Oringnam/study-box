@@ -52,6 +52,7 @@ void ProductionManager::manageBuildOrderQueue()
     // if there is nothing in the queue, oh well
     if (m_queue.isEmpty())
     {
+		setBuildOrder(m_bot.Strategy().getOpeningBookBuildOrder());
         return;
     }
 

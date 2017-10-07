@@ -154,3 +154,95 @@ Time:      06-10-2017 21-07-48
 
 
 다음 과제 ; 위 에러 확인 / 빌드 확립 / 두개의 프로젝트로 구분(나의 빌드/ 상대 빌드 )
+
+
+
+
+2017.10.7
+// 빌드 반복 좀더 확실하게
+** 좀더 매끄러운 반복
+ProductionManager 에 새로운 함수 추가.
+기존의 setBuildOrder() 함수는 m_queue를 초기화 하여서 빌드가 꼬임.
+새로운 renewBuildOrder() 함수는 초기화하지 않고 기존의 m_queue를 이어서 사용
+
+ProductionManager.h
+void    renewBuildOrder(const BuildOrder & buildOrder);
+
+ProductionManager.cpp
+// add
+void ProductionManager::renewBuildOrder(const BuildOrder & buildOrder)
+{	
+	size_t i(m_queue.size());
+
+	for (i; i<buildOrder.size(); ++i)
+	{
+		m_queue.queueAsLowestPriority(buildOrder[i], true);
+	}
+}
+
+** 위처럼 수정하고 나니 위에서 발생했던 오류는 발생하지 않는다. 하지만 나중에라도 체크해야 됨.
+BuildingManager의 분석은 나중에
+
+** 빌드오더의 반복구문
+BotConfig 파일에 LoopBuildOrder 태그 추가
+
+StrategyManager.h 내 Strategy 구조체에 BuildOrder m_loopOrder 변수 추가
+struct Strategy
+{
+    std::string m_name;
+    sc2::Race   m_race;
+    int         m_wins;
+    int         m_losses;
+    BuildOrder  m_buildOrder;
+	BuildOrder	m_loopOrder;
+
+    Strategy();
+    Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder);
+};
+
+Strategy 구조체의 Constructur 개조
+ Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder); 에서
+ Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder, const BuildOrder & loopOrder);
+loop BuildOrder 추가 , 그리고 이에 맞추어서 StrategyManager.cpp 파일들도 변경
+
+==> readStrategyFile() 함수 내 마지막 전략추가함수
+addStrategy(name, Strategy(name, strategyRace, buildOrde)); 에서 
+addStrategy(name, Strategy(name, strategyRace, buildOrder, loopOrder)); 으로 변경
+
+StrategyManager에 새로운 getLoopBookBuildOrder() 함수 생성
+자세 내용
+const BuildOrder & StrategyManager::getLoopBookBuildOrder() const
+{
+	auto buildOrderIt = m_strategies.find(m_bot.Config().StrategyName);
+
+	// look for the build order in the build order map
+	if (buildOrderIt != std::end(m_strategies))
+	{
+		return (*buildOrderIt).second.m_loopOrder;
+	}
+	else
+	{
+		BOT_ASSERT(false, "Strategy not found: %s, returning empty initial build order", m_bot.Config().StrategyName.c_str());
+		return m_emptyBuildOrder;
+	}
+}
+-->getOpeningBookBuildOrder() 함수에서 m_buildOrder 를 m_loopOrder로 변경만하면 된다.
+
+==> ProductionManager.cpp
+manageBuildOrderQueue() 내 만약 큐가 비었을 경우, 위에 맞추어서 변경
+if (m_queue.isEmpty())
+    {
+		renewBuildOrder(m_bot.Strategy().getLoopBookBuildOrder());
+        return;
+    }
+
+++ 나중에 m_queue.isEmpty()가 아닌, 큐가 조금 남아있을 경우 추가하는 방식으로 변경해야한다.
+왜냐하면, 완전히 비면 새로 큐를 추가하는동안 생산이 멈춘다.
+
+++ 공격 스쿼드를 하나로 구성한다면, 빈집이 들어오는 경우, 방어하기 위해 돌아온다.
+이걸 전략적으로 사용할 수 있을 듯
+
+//*** 오류 발생.
+건물을 모두 부시기 직전? 자세히 확인은 못함
+콘솔창에는 오류가 표시되지 않았는데, 게임이 중단됨
+예상1. 게임이 종료되었는데, 다른 onFrame들이 계속 동작하려고해서 문제가 된거다.

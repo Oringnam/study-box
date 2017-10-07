@@ -21,6 +21,17 @@ void ProductionManager::setBuildOrder(const BuildOrder & buildOrder)
     }
 }
 
+// add
+void ProductionManager::renewBuildOrder(const BuildOrder & buildOrder)
+{	
+	size_t i(m_queue.size());
+
+	for (i; i<buildOrder.size(); ++i)
+	{
+		m_queue.queueAsLowestPriority(buildOrder[i], true);
+	}
+}
+
 
 void ProductionManager::onStart()
 {
@@ -52,7 +63,7 @@ void ProductionManager::manageBuildOrderQueue()
     // if there is nothing in the queue, oh well
     if (m_queue.isEmpty())
     {
-		setBuildOrder(m_bot.Strategy().getOpeningBookBuildOrder());
+		renewBuildOrder(m_bot.Strategy().getLoopBookBuildOrder());
         return;
     }
 

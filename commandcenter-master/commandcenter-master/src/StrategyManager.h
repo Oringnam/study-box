@@ -15,9 +15,10 @@ struct Strategy
     int         m_wins;
     int         m_losses;
     BuildOrder  m_buildOrder;
+	BuildOrder	m_loopOrder;
 
     Strategy();
-    Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder);
+    Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder, const BuildOrder & loopOrder);
 };
 
 class StrategyManager
@@ -45,5 +46,6 @@ public:
     void addStrategy(const std::string & name, const Strategy & strategy);
     const UnitPairVector getBuildOrderGoal() const;
     const BuildOrder & getOpeningBookBuildOrder() const;
+	const BuildOrder & getLoopBookBuildOrder() const;
     void readStrategyFile(const std::string & str);
 };

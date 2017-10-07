@@ -9,10 +9,11 @@ Strategy::Strategy()
 
 }
 
-Strategy::Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder)
+Strategy::Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder, const BuildOrder & loopOrder)
     : m_name(name)
     , m_race(race)
     , m_buildOrder(buildOrder)
+	, m_loopOrder(loopOrder)
     , m_wins(0)
     , m_losses(0)
 {
@@ -50,6 +51,22 @@ const BuildOrder & StrategyManager::getOpeningBookBuildOrder() const
         BOT_ASSERT(false, "Strategy not found: %s, returning empty initial build order", m_bot.Config().StrategyName.c_str());
         return m_emptyBuildOrder;
     }
+}
+
+const BuildOrder & StrategyManager::getLoopBookBuildOrder() const
+{
+	auto buildOrderIt = m_strategies.find(m_bot.Config().StrategyName);
+
+	// look for the build order in the build order map
+	if (buildOrderIt != std::end(m_strategies))
+	{
+		return (*buildOrderIt).second.m_loopOrder;
+	}
+	else
+	{
+		BOT_ASSERT(false, "Strategy not found: %s, returning empty initial build order", m_bot.Config().StrategyName.c_str());
+		return m_emptyBuildOrder;
+	}
 }
 
 bool StrategyManager::shouldExpandNow() const
@@ -179,8 +196,28 @@ void StrategyManager::readStrategyFile(const std::string & filename)
                         }
                     }
                 }
+				// add
+				BuildOrder loopOrder(strategyRace);
+				if (val.HasMember("LoopBuildOrder") && val["LoopBuildOrder"].IsArray())
+				{
+					const rapidjson::Value & build = val["LoopBuildOrder"];
 
-                addStrategy(name, Strategy(name, strategyRace, buildOrder));
+					for (rapidjson::SizeType b(0); b < build.Size(); ++b)
+					{
+						if (build[b].IsString())
+						{
+							BuildType buildType(build[b].GetString(), m_bot);
+							loopOrder.add(buildType);
+						}
+						else
+						{
+							BOT_ASSERT(false, "Loop order item must be a string %s", name.c_str());
+							continue;
+						}
+					}
+				}	
+
+                addStrategy(name, Strategy(name, strategyRace, buildOrder, loopOrder));
             }	// end for all strategies
         }
 

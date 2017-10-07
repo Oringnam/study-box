@@ -19,6 +19,8 @@ class ProductionManager
     bool    canMakeNow(UnitTag producer, const BuildType & type);
     bool    detectBuildOrderDeadlock();
     void    setBuildOrder(const BuildOrder & buildOrder);
+	// add
+	void    renewBuildOrder(const BuildOrder & buildOrder);
     void    create(UnitTag producer, BuildOrderItem & item);
     void    manageBuildOrderQueue();
     int     getFreeMinerals();

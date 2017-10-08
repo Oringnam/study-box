@@ -142,11 +142,11 @@ void BaseLocationManager::onFrame()
     for (auto & baseLocation : m_baseLocationData)
     {
         baseLocation.setPlayerOccupying(Players::Self, false);
-        baseLocation.setPlayerOccupying(Players::Self, false);
+        baseLocation.setPlayerOccupying(Players::Enemy, false);
     }
 
     // for each unit on the map, update which base location it may be occupying
-    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
+/*    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
     {
         // we only care about buildings on the ground
         if (!m_bot.Data(unit.unit_type).isBuilding || unit.is_flying)
@@ -160,7 +160,16 @@ void BaseLocationManager::onFrame()
         {
             baseLocation->setPlayerOccupying(Util::GetPlayer(unit), true);
         }
-    }
+    }*/
+
+	// update our base occupations;
+	for (auto & baseLocation : m_baseLocationData)
+	{
+		if (baseLocation.isPlayerStartLocation(Players::Self))
+		{
+			baseLocation.setPlayerOccupying(Players::Self, true);
+		}
+	}
 
     // update enemy base occupations
     for (const auto & kv : m_bot.UnitInfo().getUnitInfoMap(Players::Enemy))
@@ -230,6 +239,9 @@ void BaseLocationManager::onFrame()
     // update the occupied base locations for each player
     m_occupiedBaseLocations[Players::Self] = std::set<const BaseLocation *>();
     m_occupiedBaseLocations[Players::Enemy] = std::set<const BaseLocation *>();
+
+
+
     for (auto & baseLocation : m_baseLocationData)
     {
         if (baseLocation.isOccupiedByPlayer(Players::Self))
@@ -244,7 +256,6 @@ void BaseLocationManager::onFrame()
     }
 
     // draw the debug information for each base location
-    
 }
 
 BaseLocation * BaseLocationManager::getBaseLocation(const sc2::Point2D & pos) const

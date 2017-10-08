@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-const int NearBaseLocationTileDistance = 20;
+const int NearBaseLocationTileDistance = 40;
 
 BaseLocation::BaseLocation(CCBot & bot, int baseID, const std::vector<sc2::Unit> & resources)
     : m_bot(bot)

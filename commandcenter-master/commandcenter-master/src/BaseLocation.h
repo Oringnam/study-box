@@ -9,7 +9,7 @@ class CCBot;
 
 class BaseLocation
 {
-    CCBot &               m_bot;
+    CCBot &						m_bot;
     DistanceMap                 m_distanceMap;
 
     sc2::Point2D                m_depotPosition;

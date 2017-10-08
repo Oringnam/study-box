@@ -167,6 +167,14 @@ Squad * SquadData::getUnitSquad(const UnitTag & unit)
     return nullptr;
 }
 
+bool SquadData::isAttackSquad(const UnitTag & unit) const
+{
+	const Squad * unitSquad = getUnitSquad(unit);
+
+	return unitSquad->getName()=="MainAttack";
+}
+
+
 void SquadData::assignUnitToSquad(const UnitTag & unit, Squad & squad)
 {
     BOT_ASSERT(canAssignUnitToSquad(unit, squad), "We shouldn't be re-assigning this unit!");
@@ -192,10 +200,6 @@ bool SquadData::canAssignUnitToSquad(const UnitTag & unit, const Squad & squad) 
 Squad & SquadData::getSquad(const std::string & squadName)
 {
     BOT_ASSERT(squadExists(squadName), "Trying to access squad that doesn't exist: %s", squadName.c_str());
-    if (!squadExists(squadName))
-    {
-        int a = 10;
-    }
 
     return m_squads.at(squadName);
 }

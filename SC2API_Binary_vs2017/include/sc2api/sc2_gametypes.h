@@ -82,7 +82,7 @@ static inline PlayerSetup CreateParticipant(Race race, Agent* agent) {
     return PlayerSetup(PlayerType::Participant, race, agent);
 }
 
-static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = Easy) {
+static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = CheatInsane) {
     return PlayerSetup(PlayerType::Computer, race, nullptr, difficulty);
 }
 

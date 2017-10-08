@@ -36,6 +36,7 @@ void CombatCommander::onStart()
 
 bool CombatCommander::isSquadUpdateFrame()
 {
+	if (m_combatUnits.size() < 1) return false;
 	return true;
 }
 
@@ -48,10 +49,14 @@ void CombatCommander::onFrame(const std::vector<UnitTag> & combatUnits)
 
 	m_combatUnits = combatUnits;
 
+	if (m_combatUnits.size() > 0) {
+		std::string ourRace = Util::GetStringFromRace(m_bot.GetPlayerRace(Players::Self));
+	}
+
+	updateScoutDefenseSquad();
 	if (isSquadUpdateFrame())
 	{
 		updateIdleSquad();
-		updateScoutDefenseSquad();
 		updateDefenseSquads();
 		updateAttackSquads();
 	}
@@ -103,13 +108,15 @@ void CombatCommander::updateAttackSquads()
 		}
 	}
 
+	std::string ourRace = Util::GetStringFromRace(m_bot.GetPlayerRace(Players::Self));
+	auto units = mainAttackSquad.getUnits();
+
 	SquadOrder mainAttackOrder(SquadOrderTypes::Attack, getMainAttackLocation(), 25, "Attack Enemy Base");
 	mainAttackSquad.setSquadOrder(mainAttackOrder);
 }
 
 void CombatCommander::updateScoutDefenseSquad()
 {
-
 	// if the current squad has units in it then we can ignore this
 	Squad & scoutDefenseSquad = m_squadData.getSquad("ScoutDefense");
 
@@ -181,11 +188,6 @@ void CombatCommander::updateScoutDefenseSquad()
 
 void CombatCommander::updateDefenseSquads()
 {
-	if (m_combatUnits.empty())
-	{
-		return;
-	}
-
 	// for each of our occupied regions
 	const BaseLocation * enemyBaseLocation = m_bot.Bases().getPlayerStartingBaseLocation(Players::Enemy);
 	for (const BaseLocation * myBaseLocation : m_bot.Bases().getOccupiedBaseLocations(Players::Self))
@@ -231,7 +233,7 @@ void CombatCommander::updateDefenseSquads()
 		}
 
 		// calculate how many units are flying / ground units
-		int numEnemyFlyingInRegion = 0;
+/*		int numEnemyFlyingInRegion = 0;
 		int numEnemyGroundInRegion = 0;
 		for (auto & unitTag : enemyUnitsInRegion)
 		{
@@ -246,7 +248,7 @@ void CombatCommander::updateDefenseSquads()
 			{
 				numEnemyGroundInRegion++;
 			}
-		}
+		}*/
 
 
 		std::stringstream squadName;
@@ -280,16 +282,24 @@ void CombatCommander::updateDefenseSquads()
 			Squad & defenseSquad = m_squadData.getSquad(squadName.str());
 
 			// figure out how many units we need on defense
-			int flyingDefendersNeeded = numDefendersPerEnemyUnit * numEnemyFlyingInRegion;
-			int groundDefensersNeeded = numDefendersPerEnemyUnit * numEnemyGroundInRegion;
+	//		int flyingDefendersNeeded = numDefendersPerEnemyUnit * numEnemyFlyingInRegion;
+	//		int groundDefensersNeeded = numDefendersPerEnemyUnit * numEnemyGroundInRegion;
 
-			updateDefenseSquadUnits(defenseSquad, flyingDefendersNeeded, groundDefensersNeeded);
+	//		updateDefenseSquadUnits(defenseSquad, flyingDefendersNeeded, groundDefensersNeeded);
+			updateDefenseSquadUnits(defenseSquad, 100, 100);
 		}
 		else
 		{
 			BOT_ASSERT(false, "Squad should have existed: %s", squadName.str().c_str());
 		}
+
+
+
+		std::string ourRace = Util::GetStringFromRace(m_bot.GetPlayerRace(Players::Self));
+		auto units = m_squadData.getSquad(squadName.str()).getUnits();
 	}
+
+
 
 	// for each of our defense squads, if there aren't any enemy units near the position, remove the squad
 	std::set<std::string> uselessDefenseSquads;
@@ -336,7 +346,23 @@ void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t
 	size_t defendersNeeded = flyingDefendersNeeded + groundDefendersNeeded;
 	size_t defendersAdded = 0;
 
-	while (defendersNeeded > defendersAdded)
+
+	for (auto & unitTag : m_combatUnits)
+	{
+		auto unit = m_bot.GetUnit(unitTag);
+		BOT_ASSERT(unit, "null combat unit");
+
+		if (!m_squadData.canAssignUnitToSquad(unitTag, defenseSquad)
+			|| (m_squadData.isAttackSquad(*unit))
+			)
+		{
+			continue;
+		}
+
+		m_squadData.assignUnitToSquad(unitTag, defenseSquad);
+	}
+
+	/*while (defendersNeeded > defendersAdded)
 	{
 		UnitTag defenderToAdd = findClosestDefender(defenseSquad, defenseSquad.getSquadOrder().getPosition());
 
@@ -349,7 +375,7 @@ void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t
 		{
 			break;
 		}
-	}
+	}*/
 }
 
 UnitTag CombatCommander::findClosestDefender(const Squad & defenseSquad, const sc2::Point2D & pos)

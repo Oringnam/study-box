@@ -21,6 +21,7 @@ public:
     void            clearSquadData();
 
     bool            canAssignUnitToSquad(const UnitTag & unit, const Squad & squad) const;
+	bool			isAttackSquad(const UnitTag & unit) const;
     void            assignUnitToSquad(const UnitTag & unit, Squad & squad);
     void            addSquad(const std::string & squadName, const Squad & squad);
     void            removeSquad(const std::string & squadName);

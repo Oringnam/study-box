@@ -710,3 +710,59 @@ int Squad::squadUnitsNear(const sc2::Point2D & p) const
     return numUnits;
 }
  	
+
+
+
+
+// 에러 //////////
+BaseLocation Error
+==> 주석처리 해제 ( 원래 주석처리 했었음) -- 다른 멀티 깨질때 문제 해결
+    // for each unit on the map, update which base location it may be occupying
+    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
+    {
+        // we only care about buildings on the ground
+        if (!m_bot.Data(unit.unit_type).isBuilding || unit.is_flying)
+        {
+            continue;
+        }
+
+        BaseLocation * baseLocation = getBaseLocation(unit.pos);
+
+        if (baseLocation != nullptr)
+        {
+            baseLocation->setPlayerOccupying(Util::GetPlayer(unit), true);
+        }
+    }
+
+==> drawBaseLocations() 함수 문제
+    // draw a purple sphere at the next expansion location
+	try {
+		sc2::Point2D nextExpansionPosition = getNextExpansion(Players::Self);
+		m_bot.Map().drawSphere(nextExpansionPosition, 1, sc2::Colors::Purple);
+		m_bot.Map().drawText(nextExpansionPosition, "Next Expansion Location", sc2::Colors::Purple);
+	}
+	catch (int e) {
+		std::cout << "get error() draw baselocation" << std::endl;
+	}
+함수 내에서 예외처리 시작
+	--> getNextExpansion() 함수 내에 throw 추가
+	--> if (homeBase == nullptr) throw homeBase;
+틀림
+다시
+===> 일단 보류 ************************************************** -->> BaseLocationManager.onFrame() 첫 번째 메서드 drawBaseLocations() 주석처리
+
+
+// 에러 //////////////////
+** CCBot에서 GetUnit()에서 에러
+UnitTag 값이 적절하지 않다고 함
+--> 일단 예외처리
+const sc2::Unit * CCBot::GetUnit(const UnitTag & tag) const
+{
+	try {
+		if (tag == NULL) throw tag;
+		return Observation()->GetUnit(tag);
+	}
+	catch (int e) {
+		std::cout << "get error , at GetUnit() in CCBot\n";
+	}
+}

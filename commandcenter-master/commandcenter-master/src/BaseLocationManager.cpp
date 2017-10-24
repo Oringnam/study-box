@@ -136,7 +136,7 @@ void BaseLocationManager::onStart()
 
 void BaseLocationManager::onFrame()
 {   
-    drawBaseLocations();
+ //   drawBaseLocations();
 
     // reset the player occupation information for each location
     for (auto & baseLocation : m_baseLocationData)
@@ -146,7 +146,7 @@ void BaseLocationManager::onFrame()
     }
 
     // for each unit on the map, update which base location it may be occupying
-/*    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
+    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
     {
         // we only care about buildings on the ground
         if (!m_bot.Data(unit.unit_type).isBuilding || unit.is_flying)
@@ -160,7 +160,7 @@ void BaseLocationManager::onFrame()
         {
             baseLocation->setPlayerOccupying(Util::GetPlayer(unit), true);
         }
-    }*/
+    }
 
 	// update our base occupations;
 	for (auto & baseLocation : m_baseLocationData)
@@ -191,7 +191,7 @@ void BaseLocationManager::onFrame()
 
     // update the starting locations of the enemy player
     // this will happen one of two ways:
-    
+
     // 1. we've seen the enemy base directly, so the baselocation will know
     if (m_playerStartingBaseLocations[Players::Enemy] == nullptr)
     {
@@ -203,7 +203,7 @@ void BaseLocationManager::onFrame()
             }
         }
     }
-    
+
     // 2. we've explored every other start location and haven't seen the enemy yet
     if (m_playerStartingBaseLocations[Players::Enemy] == nullptr)
     {
@@ -239,7 +239,6 @@ void BaseLocationManager::onFrame()
     // update the occupied base locations for each player
     m_occupiedBaseLocations[Players::Self] = std::set<const BaseLocation *>();
     m_occupiedBaseLocations[Players::Enemy] = std::set<const BaseLocation *>();
-
 
 
     for (auto & baseLocation : m_baseLocationData)
@@ -278,10 +277,15 @@ void BaseLocationManager::drawBaseLocations()
     }
 
     // draw a purple sphere at the next expansion location
-    sc2::Point2D nextExpansionPosition = getNextExpansion(Players::Self);
-
-    m_bot.Map().drawSphere(nextExpansionPosition, 1, sc2::Colors::Purple);
-    m_bot.Map().drawText(nextExpansionPosition, "Next Expansion Location", sc2::Colors::Purple);
+	try {
+		sc2::Point2D nextExpansionPosition = getNextExpansion(Players::Self);
+		m_bot.Map().drawSphere(nextExpansionPosition, 1, sc2::Colors::Purple);
+		m_bot.Map().drawText(nextExpansionPosition, "Next Expansion Location", sc2::Colors::Purple);
+	}
+	catch (int e) {
+		std::cout << "get error() draw baselocation" << std::endl;
+	}
+    
 }
 
 const std::vector<const BaseLocation *> & BaseLocationManager::getBaseLocations() const
@@ -311,8 +315,11 @@ sc2::Point2D BaseLocationManager::getNextExpansion(int player) const
     const BaseLocation * closestBase = nullptr;
     int minDistance = std::numeric_limits<int>::max();
 
+	//
+	if (homeBase == nullptr) throw homeBase;
+
     sc2::Point2D homeTile = homeBase->getPosition();
-    
+
     for (auto & base : getBaseLocations())
     {
         // skip mineral only and starting locations (TODO: fix this)

@@ -219,7 +219,6 @@ void CombatCommander::updateDefenseSquads()
 			}
 		}
 
-		std::cout << 1<<std::endl;
 		// we can ignore the first enemy worker in our region since we assume it is a scout
 		for (auto & unitTag : enemyUnitsInRegion)
 		{
@@ -251,7 +250,6 @@ void CombatCommander::updateDefenseSquads()
 			}
 		}*/
 
-		std::cout << 2 << std::endl;
 		std::stringstream squadName;
 		squadName << "Base Defense " << basePosition.x << " " << basePosition.y;
 
@@ -277,7 +275,6 @@ void CombatCommander::updateDefenseSquads()
 			}
 		}
 
-		std::cout << 3 << std::endl;
 		// assign units to the squad
 		if (m_squadData.squadExists(squadName.str()))
 		{
@@ -296,7 +293,6 @@ void CombatCommander::updateDefenseSquads()
 		}
 
 
-		std::cout << 4 << std::endl;
 		std::string ourRace = Util::GetStringFromRace(m_bot.GetPlayerRace(Players::Self));
 		auto units = m_squadData.getSquad(squadName.str()).getUnits();
 	}
@@ -338,7 +334,6 @@ void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t
 
 	// TODO: right now this will assign arbitrary defenders, change this so that we make sure they can attack air/ground
 
-	std::cout << "3-1" << std::endl;
 	// if there's nothing left to defend, clear the squad
 	if (flyingDefendersNeeded == 0 && groundDefendersNeeded == 0)
 	{
@@ -349,7 +344,6 @@ void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t
 	size_t defendersNeeded = flyingDefendersNeeded + groundDefendersNeeded;
 	size_t defendersAdded = 0;
 
-	std::cout << "3-2" << std::endl;
 	for (auto & unitTag : m_combatUnits)
 	{
 		auto unit = m_bot.GetUnit(unitTag);
@@ -365,7 +359,6 @@ void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t
 		m_squadData.assignUnitToSquad(unitTag, defenseSquad);
 	}
 
-	std::cout << "3-3" << std::endl;
 	/*while (defendersNeeded > defendersAdded)
 	{
 		UnitTag defenderToAdd = findClosestDefender(defenseSquad, defenseSquad.getSquadOrder().getPosition());

@@ -112,7 +112,7 @@ WorkerManager & CCBot::Workers()
 
 const sc2::Unit * CCBot::GetUnit(const UnitTag & tag) const
 {
-    return Observation()->GetUnit(tag);
+	return Observation()->GetUnit(tag);	
 }
 
 sc2::Point2D CCBot::GetStartLocation() const

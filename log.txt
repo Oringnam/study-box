@@ -636,3 +636,77 @@ const int NearBaseLocationTileDistance = 40;
 		, 이미 공격 떠나면 후발대가 따라붙지 않도록. 공격중 신호를 끄면된다
 		, 공격 중인 공격대가 회군하지 않도록. (오늘 하려했는데 실패한 것)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***************************
+2017. 10. 24
+
+!Assert:   unit
+File:      c:\users\xonao\dropbox\sc2\commandcenter-master\commandcenter-master\src\squad.cpp
+Message:   null unit in squad clear
+Line:      171
+Time:      24-10-2017 12-23-58
+
+
+==> 방법1. exception handling
+** Squad.cpp
+- clear()
+
+void Squad::clear()
+{
+    for (auto & unitTag : getUnits())
+    {
+        auto unit = m_bot.GetUnit(unitTag);
+   //     BOT_ASSERT(unit, "null unit in squad clear");
+		try {
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
+    }
+
+    m_units.clear();
+}
+
+
+- squadUnitsNear()
+int Squad::squadUnitsNear(const sc2::Point2D & p) const
+{
+    int numUnits = 0;
+
+    for (auto & unitTag : m_units)
+    {
+        auto unit = m_bot.GetUnit(unitTag);
+    //    BOT_ASSERT(unit, "null unit");
+
+		try {
+			if (unit == nullptr) throw unit;
+			if (Util::Dist(unit->pos, p) < 20.0f)
+			{
+				numUnits++;
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
+    }
+
+    return numUnits;
+}
+ 	

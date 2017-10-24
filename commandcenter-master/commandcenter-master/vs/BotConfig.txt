@@ -9,7 +9,7 @@
     "Game Info" :
     {
         "BotRace"                   : "Terran",
-        "EnemyRace"                 : "Zerg",
+        "EnemyRace"                 : "Protoss",
         "MapFile"                   : "(2)Bel'ShirVestigeLE (Void).SC2Map"
     },
         
@@ -17,7 +17,7 @@
     {
         "KiteWithRangedUnits"       : true,
         "ScoutHarassEnemy"          : true,
-        "CombatUnitsForAttack"      : 12
+        "CombatUnitsForAttack"      : 100
     },
     
     "Macro" :

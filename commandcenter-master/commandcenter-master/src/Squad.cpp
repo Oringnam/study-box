@@ -168,12 +168,16 @@ void Squad::clear()
     for (auto & unitTag : getUnits())
     {
         auto unit = m_bot.GetUnit(unitTag);
-        BOT_ASSERT(unit, "null unit in squad clear");
-
-        if (Util::IsWorker(*unit))
-        {
-            m_bot.Workers().finishedWithWorker(unitTag);
-        }
+   //     BOT_ASSERT(unit, "null unit in squad clear");
+		try {
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
     }
 
     m_units.clear();
@@ -275,12 +279,18 @@ int Squad::squadUnitsNear(const sc2::Point2D & p) const
     for (auto & unitTag : m_units)
     {
         auto unit = m_bot.GetUnit(unitTag);
-        BOT_ASSERT(unit, "null unit");
+ //       BOT_ASSERT(unit, "null unit");
 
-        if (Util::Dist(unit->pos, p) < 20.0f)
-        {
-            numUnits++;
-        }
+		try {
+			if (unit == nullptr) throw unit;
+			if (Util::Dist(unit->pos, p) < 20.0f)
+			{
+				numUnits++;
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
     }
 
     return numUnits;

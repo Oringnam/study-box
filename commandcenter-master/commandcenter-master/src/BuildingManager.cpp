@@ -4,7 +4,7 @@
 #include "CCBot.h"
 #include "Util.h"
 
-BuildingManager::BuildingManager(CCBot & bot)
+BuildingManager::BuildingManager(XelsNaga & bot)
     : m_bot(bot)
     , m_buildingPlacer(bot)
     , m_debugMode(false)

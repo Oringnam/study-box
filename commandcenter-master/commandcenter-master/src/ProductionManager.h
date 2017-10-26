@@ -5,11 +5,11 @@
 #include "BuildingManager.h"
 #include "BuildOrderQueue.h"
 
-class CCBot;
+class XelsNaga;
 
 class ProductionManager
 {
-    CCBot &       m_bot;
+    XelsNaga &       m_bot;
 
     BuildingManager m_buildingManager;
     BuildOrderQueue m_queue;
@@ -28,7 +28,7 @@ class ProductionManager
 
 public:
 
-    ProductionManager(CCBot & bot);
+    ProductionManager(XelsNaga & bot);
 
     void    onStart();
     void    onFrame();

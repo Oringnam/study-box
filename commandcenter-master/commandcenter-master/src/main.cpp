@@ -59,8 +59,8 @@ int main(int argc, char* argv[])
     }
 
     // Add the custom bot, it will control the players.
-    CCBot bot;
-	CCBot enemybot;
+    XelsNaga bot;
+	XelsNaga enemybot;
 
     
     // WARNING: Bot logic has not been thorougly tested on step sizes > 1

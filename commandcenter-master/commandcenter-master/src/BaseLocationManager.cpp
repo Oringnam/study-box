@@ -3,7 +3,7 @@
 
 #include "CCBot.h"
 
-BaseLocationManager::BaseLocationManager(CCBot & bot)
+BaseLocationManager::BaseLocationManager(XelsNaga & bot)
     : m_bot(bot)
 {
     

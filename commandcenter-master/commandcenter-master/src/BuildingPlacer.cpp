@@ -4,7 +4,7 @@
 #include "Building.h"
 #include "Util.h"
 
-BuildingPlacer::BuildingPlacer(CCBot & bot)
+BuildingPlacer::BuildingPlacer(XelsNaga & bot)
     : m_bot(bot)
 {
 

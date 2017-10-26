@@ -13,7 +13,7 @@
 #include "TechTree.h"
 #include "BuildType.h"
 
-class CCBot : public sc2::Agent 
+class XelsNaga : public sc2::Agent 
 {
     sc2::Race               m_playerRace[2];
 
@@ -32,7 +32,7 @@ class CCBot : public sc2::Agent
 
 public:
 
-    CCBot();
+    XelsNaga();
     void OnGameStart() override;
     void OnStep() override;
 

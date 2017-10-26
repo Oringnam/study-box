@@ -4,11 +4,11 @@
 #include "Squad.h"
 #include "SquadData.h"
 
-class CCBot;
+class XelsNaga;
 
 class CombatCommander
 {
-    CCBot &         m_bot;
+    XelsNaga &         m_bot;
 
     SquadData       m_squadData;
     std::vector<UnitTag>  m_combatUnits;
@@ -34,7 +34,7 @@ class CombatCommander
 
 public:
 
-    CombatCommander(CCBot & bot);
+    CombatCommander(XelsNaga & bot);
 
 
     void onStart();

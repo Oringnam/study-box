@@ -11,7 +11,7 @@ BuildType::BuildType()
 {
 }
 
-BuildType::BuildType(const std::string & name, CCBot & bot)
+BuildType::BuildType(const std::string & name, XelsNaga & bot)
     : BuildType()
 {
     m_name = name;

@@ -16,7 +16,7 @@ struct GroundThreat
     double weight;
 };
 
-class CCBot;
+class XelsNaga;
 
 class MicroManager
 {
@@ -24,7 +24,7 @@ class MicroManager
 
 protected:
 
-    CCBot & m_bot;
+    XelsNaga & m_bot;
     SquadOrder order;
 
     virtual void executeMicro(const std::vector<UnitTag> & targets) = 0;
@@ -33,7 +33,7 @@ protected:
 
 public:
 
-    MicroManager(CCBot & bot);
+    MicroManager(XelsNaga & bot);
 
     const std::vector<UnitTag> & getUnits() const;
 

@@ -123,22 +123,22 @@ bool Util::IsIdle(const sc2::Unit & unit)
     return unit.orders.empty();
 }
 
-int Util::GetUnitTypeMineralPrice(const sc2::UnitTypeID type, const CCBot & bot)
+int Util::GetUnitTypeMineralPrice(const sc2::UnitTypeID type, const XelsNaga & bot)
 {
     return bot.Observation()->GetUnitTypeData()[type].mineral_cost;
 }
 
-int Util::GetUnitTypeGasPrice(const sc2::UnitTypeID type, const CCBot & bot)
+int Util::GetUnitTypeGasPrice(const sc2::UnitTypeID type, const XelsNaga & bot)
 {
     return bot.Observation()->GetUnitTypeData()[type].vespene_cost;
 }
 
-int Util::GetUnitTypeWidth(const sc2::UnitTypeID type, const CCBot & bot)
+int Util::GetUnitTypeWidth(const sc2::UnitTypeID type, const XelsNaga & bot)
 {
     return (int)(2 * bot.Observation()->GetAbilityData()[bot.Data(type).buildAbility].footprint_radius);
 }
 
-int Util::GetUnitTypeHeight(const sc2::UnitTypeID type, const CCBot & bot)
+int Util::GetUnitTypeHeight(const sc2::UnitTypeID type, const XelsNaga & bot)
 {
     return (int)(2 * bot.Observation()->GetAbilityData()[bot.Data(type).buildAbility].footprint_radius);
 }
@@ -168,7 +168,7 @@ bool Util::IsDetector(const sc2::Unit & unit)
     return IsDetectorType(unit.unit_type);
 }
 
-float Util::GetAttackRange(const sc2::UnitTypeID & type, CCBot & bot)
+float Util::GetAttackRange(const sc2::UnitTypeID & type, XelsNaga & bot)
 {
     auto & weapons = bot.Observation()->GetUnitTypeData()[type].weapons;
     
@@ -215,7 +215,7 @@ int Util::GetPlayer(const sc2::Unit & unit)
     return -1;
 }
 
-bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
+bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, XelsNaga & bot)
 {
     if (IsWorkerType(type)) { return false; }
     if (IsSupplyProviderType(type)) { return false; }
@@ -227,7 +227,7 @@ bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
     return true;
 }
 
-bool Util::IsCombatUnit(const sc2::Unit & unit, CCBot & bot)
+bool Util::IsCombatUnit(const sc2::Unit & unit, XelsNaga & bot)
 {
     return IsCombatUnitType(unit.unit_type, bot);
 }
@@ -373,7 +373,7 @@ sc2::Race Util::GetRaceFromString(const std::string & raceIn)
     return sc2::Race::Terran;
 }
 
-sc2::UnitTypeID Util::GetUnitTypeIDFromName(const std::string & name, CCBot & bot)
+sc2::UnitTypeID Util::GetUnitTypeIDFromName(const std::string & name, XelsNaga & bot)
 {
     for (const sc2::UnitTypeData & data : bot.Observation()->GetUnitTypeData())
     {
@@ -386,7 +386,7 @@ sc2::UnitTypeID Util::GetUnitTypeIDFromName(const std::string & name, CCBot & bo
     return 0;
 }
 
-sc2::UpgradeID Util::GetUpgradeIDFromName(const std::string & name, CCBot & bot)
+sc2::UpgradeID Util::GetUpgradeIDFromName(const std::string & name, XelsNaga & bot)
 {
     for (const sc2::UpgradeData & data : bot.Observation()->GetUpgradeData())
     {
@@ -399,7 +399,7 @@ sc2::UpgradeID Util::GetUpgradeIDFromName(const std::string & name, CCBot & bot)
     return 0;
 }
 
-sc2::BuffID Util::GetBuffIDFromName(const std::string & name, CCBot & bot)
+sc2::BuffID Util::GetBuffIDFromName(const std::string & name, XelsNaga & bot)
 {
     for (const sc2::BuffData & data : bot.Observation()->GetBuffData())
     {
@@ -412,7 +412,7 @@ sc2::BuffID Util::GetBuffIDFromName(const std::string & name, CCBot & bot)
     return 0;
 }
 
-sc2::AbilityID Util::GetAbilityIDFromName(const std::string & name, CCBot & bot)
+sc2::AbilityID Util::GetAbilityIDFromName(const std::string & name, XelsNaga & bot)
 {
     for (const sc2::AbilityData & data : bot.Observation()->GetAbilityData())
     {
@@ -446,7 +446,7 @@ UnitTag GetClosestEnemyUnitTo(const sc2::Unit & ourUnit, const sc2::ObservationI
 
 // checks where a given unit can make a given unit type now
 // this is done by iterating its legal abilities for the build command to make the unit
-bool Util::UnitCanBuildTypeNow(const sc2::Unit & unit, const sc2::UnitTypeID & type, CCBot & m_bot)
+bool Util::UnitCanBuildTypeNow(const sc2::Unit & unit, const sc2::UnitTypeID & type, XelsNaga & m_bot)
 {
     sc2::AvailableAbilities available_abilities = m_bot.Query()->GetAbilitiesForUnit(unit.tag);
     

@@ -9,7 +9,7 @@
     "Game Info" :
     {
         "BotRace"                   : "Protoss",
-        "EnemyRace"                 : "Zerg",
+        "EnemyRace"                 : "Terran",
         "MapFile"                   : "(2)Bel'ShirVestigeLE (Void).SC2Map"
     },
         
@@ -17,7 +17,7 @@
     {
         "KiteWithRangedUnits"       : true,
         "ScoutHarassEnemy"          : true,
-        "CombatUnitsForAttack"      : 6
+        "CombatUnitsForAttack"      : 1
     },
     
     "Macro" :
@@ -52,7 +52,7 @@
     
     "Strategy" :
     {
-        "Protoss"                   : "Protoss_MyBuild",
+        "Protoss"                   : "Protoss_ZealotRush",
         "Terran"                    : "Terran_MarineRush",
         "Zerg"                      : "Zerg_ZerglingRush",
         
@@ -60,8 +60,9 @@
         
         "Strategies" :
         {
-            "Protoss_ZealotRush"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe"]},
-	    "Protoss_MyBuild"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Pylon" , "Probe", "Probe","Gateway", "Pylon", "Probe","Assimilator","Gateway","Probe","Pylon","Zealot", "Zealot", "Zealot","Probe","CyberneticsCore", "Zealot","Assimilator","Zealot","Probe","Probe","Sentry","Zealot","Zealot","Sentry"] },
+            "Protoss_ZealotRush"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Pylon", "Probe", "Probe","Gateway","Pylon", "Probe","Gateway", "Pylon","Zealot", "Zealot", "Zealot","Zealot","Gateway", "Zealot", "Zealot","Zealot", "Zealot", "Zealot", "Zealot", "Zealot"], "LoopBuildOrder" : ["Pylon","Zealot","Zealot", "Zealot","Zealot", "Zealot"]},
+	    "Protoss_MyBuild"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Probe", "Pylon" , "Probe", "Probe","Gateway", "Pylon", "Probe","Assimilator","Gateway", "Gateway", "Probe","Pylon","Zealot", "Probe", "Zealot", "Zealot","Probe","Probe","CyberneticsCore", "Zealot","Zealot","Sentry","Zealot","Zealot","Sentry"], "LoopBuildOrder" : ["Pylon","Zealot","Zealot", "Sentry","Zealot","Pylon", "Zealot", "Zealot", "Zealot", "Zealot"]
+ },
 
             "Terran_MarineRush"     : { "Race" : "Terran",  "OpeningBuildOrder" : ["SCV", "SCV", "SupplyDepot", "SCV", "SCV", "Barracks", "Barracks", "Barracks", "Barracks", "SupplyDepot", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine"],"LoopBuildOrder" : ["SupplyDepot","Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine"] },
 

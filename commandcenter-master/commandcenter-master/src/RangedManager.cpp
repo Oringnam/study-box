@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "CCBot.h"
 
-RangedManager::RangedManager(CCBot & bot)
+RangedManager::RangedManager(XelsNaga & bot)
     : MicroManager(bot)
 {
 

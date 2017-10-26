@@ -2,7 +2,7 @@
 #include "CCBot.h"
 #include "Util.h"
 
-MicroManager::MicroManager(CCBot & bot)
+MicroManager::MicroManager(XelsNaga & bot)
     : m_bot(bot)
 {
 }

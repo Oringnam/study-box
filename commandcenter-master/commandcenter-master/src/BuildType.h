@@ -7,7 +7,7 @@ namespace BuildTypes
     enum { Unit, Upgrade, Buff, Ability, None };
 }
 
-class CCBot;
+class XelsNaga;
 class BuildType
 {
     size_t          m_type;
@@ -20,7 +20,7 @@ class BuildType
 public:
 
     BuildType();
-    BuildType(const std::string & name, CCBot & bot);
+    BuildType(const std::string & name, XelsNaga & bot);
     BuildType(const sc2::UnitTypeID & unitType);
     BuildType(const sc2::UpgradeID & upgradeType);
 

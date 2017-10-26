@@ -3,7 +3,7 @@
 #include "sc2api/sc2_api.h"
 #include "Common.h"
 
-class CCBot;
+class XelsNaga;
 
 namespace Util
 {
@@ -16,8 +16,8 @@ namespace Util
     };
 
     int GetPlayer(const sc2::Unit & unit);
-    bool IsCombatUnit(const sc2::Unit & unit, CCBot & bot);
-    bool IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot);
+    bool IsCombatUnit(const sc2::Unit & unit, XelsNaga & bot);
+    bool IsCombatUnitType(const sc2::UnitTypeID & type, XelsNaga & bot);
     bool IsSupplyProvider(const sc2::Unit & unit);
     bool IsSupplyProviderType(const sc2::UnitTypeID & type);
     bool IsTownHall(const sc2::Unit & unit);
@@ -32,23 +32,23 @@ namespace Util
     bool IsWorkerType(const sc2::UnitTypeID & unit);
     bool IsIdle(const sc2::Unit & unit);
     bool IsCompleted(const sc2::Unit & unit);
-    float GetAttackRange(const sc2::UnitTypeID & type, CCBot & bot);
+    float GetAttackRange(const sc2::UnitTypeID & type, XelsNaga & bot);
     
-    bool UnitCanBuildTypeNow(const sc2::Unit & unit, const sc2::UnitTypeID & type, CCBot & m_bot);
-    int GetUnitTypeWidth(const sc2::UnitTypeID type, const CCBot & bot);
-    int GetUnitTypeHeight(const sc2::UnitTypeID type, const CCBot & bot);
-    int GetUnitTypeMineralPrice(const sc2::UnitTypeID type, const CCBot & bot);
-    int GetUnitTypeGasPrice(const sc2::UnitTypeID type, const CCBot & bot);
+    bool UnitCanBuildTypeNow(const sc2::Unit & unit, const sc2::UnitTypeID & type, XelsNaga & m_bot);
+    int GetUnitTypeWidth(const sc2::UnitTypeID type, const XelsNaga & bot);
+    int GetUnitTypeHeight(const sc2::UnitTypeID type, const XelsNaga & bot);
+    int GetUnitTypeMineralPrice(const sc2::UnitTypeID type, const XelsNaga & bot);
+    int GetUnitTypeGasPrice(const sc2::UnitTypeID type, const XelsNaga & bot);
     sc2::UnitTypeID GetTownHall(const sc2::Race & race);
     sc2::UnitTypeID GetSupplyProvider(const sc2::Race & race);
     std::string     GetStringFromRace(const sc2::Race & race);
     sc2::Race       GetRaceFromString(const std::string & race);
     sc2::Point2D    CalcCenter(const std::vector<sc2::Unit> & units);
 
-    sc2::UnitTypeID GetUnitTypeIDFromName(const std::string & name, CCBot & bot);
-    sc2::UpgradeID  GetUpgradeIDFromName(const std::string & name, CCBot & bot);
-    sc2::BuffID     GetBuffIDFromName(const std::string & name, CCBot & bot);
-    sc2::AbilityID  GetAbilityIDFromName(const std::string & name, CCBot & bot);
+    sc2::UnitTypeID GetUnitTypeIDFromName(const std::string & name, XelsNaga & bot);
+    sc2::UpgradeID  GetUpgradeIDFromName(const std::string & name, XelsNaga & bot);
+    sc2::BuffID     GetBuffIDFromName(const std::string & name, XelsNaga & bot);
+    sc2::AbilityID  GetAbilityIDFromName(const std::string & name, XelsNaga & bot);
 
     float Dist(const sc2::Point2D & p1, const sc2::Point2D & p2);
     float DistSq(const sc2::Point2D & p1, const sc2::Point2D & p2);

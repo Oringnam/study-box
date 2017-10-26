@@ -3,12 +3,12 @@
 #include "Common.h"
 #include "BuildingData.h"
 
-class CCBot;
+class XelsNaga;
 class BaseLocation;
 
 class BuildingPlacer
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
 
     std::vector< std::vector<bool> > m_reserveMap;
 
@@ -21,7 +21,7 @@ class BuildingPlacer
 
 public:
 
-    BuildingPlacer(CCBot & bot);
+    BuildingPlacer(XelsNaga & bot);
 
     void onStart();
 

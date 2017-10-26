@@ -4,7 +4,7 @@
 #include "BuildType.h"
 #include "Timer.hpp"
 
-TechTree::TechTree(CCBot & bot)
+TechTree::TechTree(XelsNaga & bot)
     : m_bot(bot)
 {
 

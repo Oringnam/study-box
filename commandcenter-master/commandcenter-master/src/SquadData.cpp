@@ -2,7 +2,7 @@
 #include "CCBot.h"
 #include "Util.h"
 
-SquadData::SquadData(CCBot & bot)
+SquadData::SquadData(XelsNaga & bot)
     : m_bot(bot)
 {
 

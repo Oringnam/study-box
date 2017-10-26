@@ -4,7 +4,7 @@
 #include "Util.h"
 #include "Building.h"
 
-WorkerManager::WorkerManager(CCBot & bot)
+WorkerManager::WorkerManager(XelsNaga & bot)
     : m_bot         (bot)
     , m_workerData  (bot)
 {

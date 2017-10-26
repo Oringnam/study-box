@@ -3,11 +3,11 @@
 #include "WorkerData.h"
 
 class Building;
-class CCBot;
+class XelsNaga;
 
 class WorkerManager
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
 
     mutable WorkerData  m_workerData;
     UnitTag     m_previousClosestWorker;
@@ -20,7 +20,7 @@ class WorkerManager
 
 public:
 
-    WorkerManager(CCBot & bot);
+    WorkerManager(XelsNaga & bot);
 
     void        onStart();
     void        onFrame();

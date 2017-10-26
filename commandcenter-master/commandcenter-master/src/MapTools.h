@@ -5,11 +5,11 @@
 #include "sc2api/sc2_api.h"
 #include "DistanceMap.h"
 
-class CCBot;
+class XelsNaga;
 
 class MapTools
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
     int     m_width;
     int     m_height;
     float   m_maxZ;
@@ -35,7 +35,7 @@ class MapTools
 
 public:
 
-    MapTools(CCBot & bot);
+    MapTools(XelsNaga & bot);
 
     void    onStart();
     void    onFrame();

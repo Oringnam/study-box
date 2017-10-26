@@ -6,7 +6,7 @@
 
 const int NearBaseLocationTileDistance = 40;
 
-BaseLocation::BaseLocation(CCBot & bot, int baseID, const std::vector<sc2::Unit> & resources)
+BaseLocation::BaseLocation(XelsNaga & bot, int baseID, const std::vector<sc2::Unit> & resources)
     : m_bot(bot)
     , m_baseID               (baseID)
     , m_isStartLocation      (false)

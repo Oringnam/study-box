@@ -2,7 +2,7 @@
 #include "Util.h"
 #include "CCBot.h"
 
-MeleeManager::MeleeManager(CCBot & bot)
+MeleeManager::MeleeManager(XelsNaga & bot)
     : MicroManager(bot)
 {
 

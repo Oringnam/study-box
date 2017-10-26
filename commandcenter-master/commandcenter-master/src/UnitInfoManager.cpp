@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-UnitInfoManager::UnitInfoManager(CCBot & bot)
+UnitInfoManager::UnitInfoManager(XelsNaga & bot)
     : m_bot(bot)
 {
 

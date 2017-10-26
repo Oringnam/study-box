@@ -3,7 +3,7 @@
 #include "CCBot.h"
 #include "Micro.h"
 
-ProductionManager::ProductionManager(CCBot & bot)
+ProductionManager::ProductionManager(XelsNaga & bot)
     : m_bot             (bot)
     , m_buildingManager (bot)
     , m_queue           (bot)

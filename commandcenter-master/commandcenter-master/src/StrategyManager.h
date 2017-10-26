@@ -6,7 +6,7 @@
 typedef std::pair<sc2::UnitTypeID, size_t>  UnitPair;
 typedef std::vector<UnitPair>               UnitPairVector;
 
-class CCBot;
+class XelsNaga;
 
 struct Strategy
 {
@@ -23,7 +23,7 @@ struct Strategy
 
 class StrategyManager
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
 
     sc2::Race					    m_selfRace;
     sc2::Race					    m_enemyRace;
@@ -38,7 +38,7 @@ class StrategyManager
 
 public:
 
-    StrategyManager(CCBot & bot);
+    StrategyManager(XelsNaga & bot);
 
     void onStart();
     void onFrame();

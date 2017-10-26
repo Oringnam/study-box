@@ -2,7 +2,7 @@
 #include "CCBot.h"
 #include "Util.h"
 
-GameCommander::GameCommander(CCBot & bot)
+GameCommander::GameCommander(XelsNaga & bot)
     : m_bot                 (bot)
     , m_productionManager   (bot)
     , m_scoutManager        (bot)

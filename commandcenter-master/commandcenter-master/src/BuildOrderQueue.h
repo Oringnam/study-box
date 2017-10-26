@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "BuildType.h"
 
-class CCBot;
+class XelsNaga;
 
 struct BuildOrderItem
 {
@@ -17,7 +17,7 @@ struct BuildOrderItem
 
 class BuildOrderQueue
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
     std::deque<BuildOrderItem> m_queue;
 
     int m_lowestPriority;
@@ -27,7 +27,7 @@ class BuildOrderQueue
 
 public:
 
-    BuildOrderQueue(CCBot & bot);
+    BuildOrderQueue(XelsNaga & bot);
 
     void clearAll();											// clears the entire build order queue
     void skipItem();											// increments skippedItems

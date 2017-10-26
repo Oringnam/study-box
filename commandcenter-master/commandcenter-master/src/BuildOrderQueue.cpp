@@ -1,7 +1,7 @@
 #include "BuildOrderQueue.h"
 #include "CCBot.h"
 
-BuildOrderQueue::BuildOrderQueue(CCBot & bot)
+BuildOrderQueue::BuildOrderQueue(XelsNaga & bot)
     : m_bot(bot)
     , m_highestPriority(0)
     , m_lowestPriority(0)

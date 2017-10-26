@@ -2,7 +2,7 @@
 
 #include "Common.h"
 
-class CCBot;
+class XelsNaga;
 class BuildType;
 
 struct TypeData
@@ -28,7 +28,7 @@ struct TypeData
 
 class TechTree
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
     std::map<sc2::UnitTypeID, TypeData> m_unitTypeData;
     std::map<sc2::UpgradeID, TypeData>  m_upgradeData;
 
@@ -39,7 +39,7 @@ class TechTree
 
 public:
 
-    TechTree(CCBot & bot);
+    TechTree(XelsNaga & bot);
     void onStart();
 
     const TypeData & getData(const sc2::UnitTypeID & type) const;

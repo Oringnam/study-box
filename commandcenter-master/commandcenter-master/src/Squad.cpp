@@ -2,7 +2,7 @@
 #include "CCBot.h"
 #include "Util.h"
 
-Squad::Squad(CCBot & bot)
+Squad::Squad(XelsNaga & bot)
     : m_bot(bot)
     , m_lastRetreatSwitch(0)
     , m_lastRetreatSwitchVal(false)
@@ -14,7 +14,7 @@ Squad::Squad(CCBot & bot)
 
 }
 
-Squad::Squad(const std::string & name, const SquadOrder & order, size_t priority, CCBot & bot)
+Squad::Squad(const std::string & name, const SquadOrder & order, size_t priority, XelsNaga & bot)
     : m_bot(bot)
     , m_name(name)
     , m_order(order)

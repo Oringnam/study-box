@@ -3,11 +3,11 @@
 #include "Common.h"
 #include "BuildingPlacer.h"
 
-class CCBot;
+class XelsNaga;
 
 class BuildingManager
 {
-    CCBot &   m_bot;
+    XelsNaga &   m_bot;
 
     BuildingPlacer  m_buildingPlacer;
     std::vector<Building> m_buildings;
@@ -30,7 +30,7 @@ class BuildingManager
 
 public:
 
-    BuildingManager(CCBot & bot);
+    BuildingManager(XelsNaga & bot);
 
     void                onStart();
     void                onFrame();

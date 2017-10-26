@@ -15,7 +15,7 @@ typedef std::vector<std::vector<int>>  vvi;
 typedef std::vector<std::vector<float>>  vvf;
 
 // constructor for MapTools
-MapTools::MapTools(CCBot & bot)
+MapTools::MapTools(XelsNaga & bot)
     : m_bot     (bot)
     , m_width   (0)
     , m_height  (0)

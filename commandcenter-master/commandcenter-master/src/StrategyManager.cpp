@@ -21,7 +21,7 @@ Strategy::Strategy(const std::string & name, const sc2::Race & race, const Build
 }
 
 // constructor
-StrategyManager::StrategyManager(CCBot & bot)
+StrategyManager::StrategyManager(XelsNaga & bot)
     : m_bot(bot)
 {
 

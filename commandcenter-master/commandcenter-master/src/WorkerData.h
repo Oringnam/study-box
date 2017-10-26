@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-class CCBot;
+class XelsNaga;
 
 namespace WorkerJobs
 {
@@ -10,7 +10,7 @@ namespace WorkerJobs
 
 class WorkerData
 {
-    CCBot & m_bot;
+    XelsNaga & m_bot;
 
     std::set<UnitTag>           m_workers;
     std::set<UnitTag>           m_depots;
@@ -25,7 +25,7 @@ class WorkerData
 
 public:
 
-    WorkerData(CCBot & bot);
+    WorkerData(XelsNaga & bot);
 
     void    workerDestroyed(const UnitTag & unit);
     void    updateAllWorkerData();

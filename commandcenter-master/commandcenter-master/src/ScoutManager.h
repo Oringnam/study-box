@@ -2,11 +2,11 @@
 
 #include "Common.h"
 
-class CCBot;
+class XelsNaga;
 
 class ScoutManager
 {
-    CCBot &   m_bot;
+    XelsNaga &   m_bot;
 
     UnitTag         m_scoutUnitTag;
     std::string     m_scoutStatus;
@@ -23,7 +23,7 @@ class ScoutManager
 
 public:
 
-    ScoutManager(CCBot & bot);
+    ScoutManager(XelsNaga & bot);
 
     void onStart();
     void onFrame();

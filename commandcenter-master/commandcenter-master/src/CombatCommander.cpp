@@ -56,10 +56,11 @@ void CombatCommander::onFrame(const std::vector<UnitTag> & combatUnits)
 	updateScoutDefenseSquad();
 	if (isSquadUpdateFrame())
 	{
-		updateIdleSquad();
+//		updateIdleSquad();
 		updateDefenseSquads();
-		updateAttackSquads();
+//		updateAttackSquads();
 	}
+	
 
 	m_squadData.onFrame();
 }
@@ -128,7 +129,7 @@ void CombatCommander::updateScoutDefenseSquad()
 	std::vector<UnitTag> enemyUnitsInRegion;
 	for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
 	{
-		if (myBaseLocation->containsPosition(unit.pos))
+		if (myBaseLocation->containsPosition(unit.pos, 0))
 		{
 			enemyUnitsInRegion.push_back(unit);
 		}
@@ -146,16 +147,20 @@ void CombatCommander::updateScoutDefenseSquad()
 		BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
 
 		UnitTag workerDefenderTag;
-		if (m_combatUnits.empty())
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+/*		if (m_combatUnits.empty())
 		{
 			// get our worker unit that is mining that is closest to it
 			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
 			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
 		}
+
 		else
 		{
 			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
-		}
+		}*/
 
 		if (enemyWorkerTag && workerDefenderTag)
 		{

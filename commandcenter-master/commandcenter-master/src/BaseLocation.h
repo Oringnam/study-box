@@ -39,6 +39,9 @@ public:
     bool isPlayerStartLocation(int player) const;
     bool isMineralOnly() const;
     bool containsPosition(const sc2::Point2D & pos) const;
+	//
+	bool containsPosition(const sc2::Point2D & pos, int situation) const;
+
     const sc2::Point2D & getDepotPosition() const;
     const sc2::Point2D & getPosition() const;
     const std::vector<sc2::Unit> & getGeysers() const;

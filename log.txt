@@ -766,3 +766,47 @@ const sc2::Unit * CCBot::GetUnit(const UnitTag & tag) const
 		std::cout << "get error , at GetUnit() in CCBot\n";
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*********************************************************************************************************************
+2017. 10. 25
+CCBot - getUnit °íÄ¡±â
+
+
+
+*********************************************************************************************************************
+
+2017. 10. 26
+1. ÀÏ²Û Á¤Âû ¹æ¾î ¹üÀ§ Á¼È÷±â
+
+2. ÀÏ²Û ·¯½¬ ¸·±â
+
+3. ÀÏ²ÛÀº ÀÏ²ÛÀ¸·Î¸¸ ¸·±â
+		UnitTag workerDefenderTag;
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+/*		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}*/

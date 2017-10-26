@@ -170,6 +170,7 @@ void Squad::clear()
         auto unit = m_bot.GetUnit(unitTag);
    //     BOT_ASSERT(unit, "null unit in squad clear");
 		try {
+			if (unit == nullptr) throw unit;
 			if (Util::IsWorker(*unit))
 			{
 				m_bot.Workers().finishedWithWorker(unitTag);

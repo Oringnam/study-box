@@ -144,6 +144,20 @@ bool BaseLocation::containsPosition(const sc2::Point2D & pos) const
     return getGroundDistance(pos) < NearBaseLocationTileDistance;
 }
 
+// add
+// 0 - worker defence 
+// 1 -- combat defence
+bool BaseLocation::containsPosition(const sc2::Point2D & pos, int situation) const
+{
+	if (!m_bot.Map().isValid(pos) || (pos.x == 0 && pos.y == 0))
+	{
+		return false;
+	}
+
+	if(situation==0) return getGroundDistance(pos) < NearBaseLocationTileDistance / 4;
+	return getGroundDistance(pos) < NearBaseLocationTileDistance;
+}
+
 const std::vector<sc2::Unit> & BaseLocation::getGeysers() const
 {
     return m_geysers;

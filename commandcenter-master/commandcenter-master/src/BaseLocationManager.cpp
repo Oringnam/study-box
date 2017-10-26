@@ -136,7 +136,7 @@ void BaseLocationManager::onStart()
 
 void BaseLocationManager::onFrame()
 {   
- //   drawBaseLocations();
+    drawBaseLocations();
 
     // reset the player occupation information for each location
     for (auto & baseLocation : m_baseLocationData)

@@ -59,6 +59,12 @@ bool Squad::isEmpty() const
     return m_units.empty();
 }
 
+// add
+int	Squad::size() const
+{
+	return m_units.size();
+}
+
 size_t Squad::getPriority() const
 {
     return m_priority;

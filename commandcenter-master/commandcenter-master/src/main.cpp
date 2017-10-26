@@ -71,8 +71,8 @@ int main(int argc, char* argv[])
 
     coordinator.SetParticipants({
         CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
-		CreateParticipant(Util::GetRaceFromString(enemyRaceString), &enemybot)
-    //    CreateComputer(Util::GetRaceFromString(enemyRaceString))
+	//	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &enemybot)
+        CreateComputer(Util::GetRaceFromString(enemyRaceString)),
     });
 
     // Start the game.

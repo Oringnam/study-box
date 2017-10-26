@@ -15,7 +15,7 @@ class CombatCommander
     bool            m_initialized;
     bool            m_attackStarted;
 
-    void            updateScoutDefenseSquad();
+    void            updateWorkerDefenseSquad();
     void            updateDefenseSquads();
     void            updateAttackSquads();
     void            updateIdleSquad();

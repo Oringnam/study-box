@@ -53,12 +53,12 @@ void CombatCommander::onFrame(const std::vector<UnitTag> & combatUnits)
 		std::string ourRace = Util::GetStringFromRace(m_bot.GetPlayerRace(Players::Self));
 	}
 
-	updateScoutDefenseSquad();
+	updateWorkerDefenseSquad();
 	if (isSquadUpdateFrame())
 	{
-//		updateIdleSquad();
+		updateIdleSquad();
 		updateDefenseSquads();
-//		updateAttackSquads();
+		updateAttackSquads();
 	}
 	
 
@@ -116,66 +116,57 @@ void CombatCommander::updateAttackSquads()
 	mainAttackSquad.setSquadOrder(mainAttackOrder);
 }
 
-void CombatCommander::updateScoutDefenseSquad()
+void CombatCommander::updateWorkerDefenseSquad()
 {
 	// if the current squad has units in it then we can ignore this
-	Squad & scoutDefenseSquad = m_squadData.getSquad("ScoutDefense");
+	Squad & workerDefenseSquad = m_squadData.getSquad("ScoutDefense");
 
 	// get the region that our base is located in
 	const BaseLocation * myBaseLocation = m_bot.Bases().getPlayerStartingBaseLocation(Players::Self);
 	BOT_ASSERT(myBaseLocation, "null self base location");
 
 	// get all of the enemy units in this region
-	std::vector<UnitTag> enemyUnitsInRegion;
+	std::vector<UnitTag> enemyWorkersInRegion;
 	for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
 	{
-		if (myBaseLocation->containsPosition(unit.pos, 0))
+		if (myBaseLocation->containsPosition(unit.pos, 0) && Util::IsWorker(*m_bot.GetUnit(unit)))
 		{
-			enemyUnitsInRegion.push_back(unit);
+			enemyWorkersInRegion.push_back(unit);
 		}
 	}
 
 	// if there's an enemy worker in our region then assign someone to chase him
-	bool assignScoutDefender = (enemyUnitsInRegion.size() == 1) && Util::IsWorker(*m_bot.GetUnit(enemyUnitsInRegion[0]));
+//	bool assignScoutDefender = (enemyWorkersInRegion.size() == 1);
 
-	// if our current squad is empty and we should assign a worker, do it
-	if (scoutDefenseSquad.isEmpty() && assignScoutDefender)
-	{
-		// the enemy worker that is attacking us
-		UnitTag enemyWorkerTag = *enemyUnitsInRegion.begin();
-		auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
-		BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
+	// get a workerDefenceSquad
+	if (workerDefenseSquad.size() <= enemyWorkersInRegion.size()) {
+		for (UnitTag enemyWorkerTag : enemyWorkersInRegion) {
+			//	UnitTag enemyWorkerTag = enemyWorkersInRegion[i];
+			auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
+			BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
 
-		UnitTag workerDefenderTag;
-		// get our worker unit that is mining that is closest to it
-		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
-		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
-/*		if (m_combatUnits.empty())
-		{
+			UnitTag workerDefenderTag;
 			// get our worker unit that is mining that is closest to it
 			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
 			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
-		}
 
-		else
-		{
-			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
-		}*/
-
-		if (enemyWorkerTag && workerDefenderTag)
-		{
-			// grab it from the worker manager and put it in the squad
-			if (m_squadData.canAssignUnitToSquad(workerDefenderTag, scoutDefenseSquad))
+			if (enemyWorkerTag && workerDefenderTag)
 			{
-				m_bot.Workers().setCombatWorker(workerDefenderTag);
-				m_squadData.assignUnitToSquad(workerDefenderTag, scoutDefenseSquad);
+				// grab it from the worker manager and put it in the squad
+				if (m_squadData.canAssignUnitToSquad(workerDefenderTag, workerDefenseSquad))
+				{
+					m_bot.Workers().setCombatWorker(workerDefenderTag);
+					m_squadData.assignUnitToSquad(workerDefenderTag, workerDefenseSquad);
+				}
 			}
+
 		}
 	}
-	// if our squad is not empty and we shouldn't have a worker chasing then take him out of the squad
-	else if (!scoutDefenseSquad.isEmpty() && !assignScoutDefender)
+	
+	// renew the workerDefenceSquad
+	if (!workerDefenseSquad.isEmpty() && enemyWorkersInRegion.size()==0)
 	{
-		for (auto & unitTag : scoutDefenseSquad.getUnits())
+		for (auto & unitTag : workerDefenseSquad.getUnits())
 		{
 			auto unit = m_bot.GetUnit(unitTag);
 			BOT_ASSERT(unit, "null unit in scoutDefenseSquad");
@@ -187,8 +178,61 @@ void CombatCommander::updateScoutDefenseSquad()
 			}
 		}
 
-		scoutDefenseSquad.clear();
+		workerDefenseSquad.clear();
 	}
+
+	// if our current squad is empty and we should assign a worker, do it
+/*	if (workerDefenseSquad.isEmpty() && assignScoutDefender)
+	{
+		// the enemy worker that is attacking us
+		UnitTag enemyWorkerTag = *enemyWorkersInRegion.begin();
+		auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
+		BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
+
+		UnitTag workerDefenderTag;
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}
+
+		if (enemyWorkerTag && workerDefenderTag)
+		{
+			// grab it from the worker manager and put it in the squad
+			if (m_squadData.canAssignUnitToSquad(workerDefenderTag, workerDefenseSquad))
+			{
+				m_bot.Workers().setCombatWorker(workerDefenderTag);
+				m_squadData.assignUnitToSquad(workerDefenderTag, workerDefenseSquad);
+			}
+		}
+	}
+	// if our squad is not empty and we shouldn't have a worker chasing then take him out of the squad
+	else if (!workerDefenseSquad.isEmpty() && !assignScoutDefender)
+	{
+		for (auto & unitTag : workerDefenseSquad.getUnits())
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null unit in scoutDefenseSquad");
+
+			Micro::SmartStop(unitTag, m_bot);
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+
+		workerDefenseSquad.clear();
+	}
+	*/
 }
 
 void CombatCommander::updateDefenseSquads()

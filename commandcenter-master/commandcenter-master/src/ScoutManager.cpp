@@ -1,5 +1,5 @@
 #include "ScoutManager.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 #include "Micro.h"
 

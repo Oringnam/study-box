@@ -1,7 +1,7 @@
 #include "sc2api/sc2_api.h"
 #include "sc2utils/sc2_manage_process.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include <iostream>
 
 Util::IsUnit::IsUnit(sc2::UNIT_TYPEID type) 

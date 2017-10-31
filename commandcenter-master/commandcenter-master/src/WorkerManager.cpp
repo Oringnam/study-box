@@ -1,6 +1,6 @@
 #include "WorkerManager.h"
 #include "Micro.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 #include "Building.h"
 

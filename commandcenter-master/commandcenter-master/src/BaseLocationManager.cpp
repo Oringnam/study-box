@@ -1,7 +1,7 @@
 #include "BaseLocationManager.h"
 #include "Util.h"
 
-#include "CCBot.h"
+#include "XelsNaga.h"
 
 BaseLocationManager::BaseLocationManager(XelsNaga & bot)
     : m_bot(bot)

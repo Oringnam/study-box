@@ -1,6 +1,6 @@
 #include "ProductionManager.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Micro.h"
 
 ProductionManager::ProductionManager(XelsNaga & bot)

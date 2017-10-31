@@ -1,5 +1,5 @@
 #include "GameCommander.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 
 GameCommander::GameCommander(XelsNaga & bot)

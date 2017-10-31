@@ -1,6 +1,6 @@
 #include "CombatCommander.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Micro.h"
 
 const size_t IdlePriority = 0;
@@ -147,7 +147,6 @@ void CombatCommander::updateWorkerDefenseSquad()
 
 			UnitTag workerDefenderTag;
 			// get our worker unit that is mining that is closest to it
-			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
 			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
 
 			if (enemyWorkerTag && workerDefenderTag)

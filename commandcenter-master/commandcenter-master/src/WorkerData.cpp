@@ -1,7 +1,7 @@
 #include "WorkerData.h"
 #include "Micro.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include <iostream>
 #include <sstream>
 

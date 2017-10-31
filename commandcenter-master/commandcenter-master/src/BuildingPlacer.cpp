@@ -1,6 +1,6 @@
 #include "Common.h"
 #include "BuildingPlacer.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Building.h"
 #include "Util.h"
 

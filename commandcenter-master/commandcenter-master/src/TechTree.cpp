@@ -1,6 +1,6 @@
 #include "TechTree.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "BuildType.h"
 #include "Timer.hpp"
 

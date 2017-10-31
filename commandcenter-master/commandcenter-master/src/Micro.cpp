@@ -1,6 +1,6 @@
 #include "Micro.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 
 const float dotRadius = 0.1f;
 

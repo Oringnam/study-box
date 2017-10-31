@@ -1,6 +1,6 @@
 #include "BuildType.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 
 BuildType::BuildType()
     : m_type        (BuildTypes::None)

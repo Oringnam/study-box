@@ -9,11 +9,22 @@
 #include <random>
 #include <cmath>
 
-#include "CCBot.h"
+#include "XelsNaga.h"
+
+
+class Bot : public sc2::Agent {
+public:
+	virtual void OnGameStart() final {
+		std::cout << "Hello, World!" << std::endl;
+	}
+
+	virtual void OnStep() final {
+		std::cout << Observation()->GetGameLoop() << std::endl;
+	}
+};
 
 int main(int argc, char* argv[]) 
 {
-		// test
     sc2::Coordinator coordinator;
     if (!coordinator.LoadSettings(argc, argv)) 
     {
@@ -60,9 +71,9 @@ int main(int argc, char* argv[])
 
     // Add the custom bot, it will control the players.
     XelsNaga bot;
-	XelsNaga enemybot;
+//	XelsNaga enemybot;
+//	Bot		tester;
 
-    
     // WARNING: Bot logic has not been thorougly tested on step sizes > 1
     //          Setting this = N means the bot's onFrame gets called once every N frames
     //          The bot may crash or do unexpected things if its logic is not called every frame
@@ -71,6 +82,7 @@ int main(int argc, char* argv[])
 
     coordinator.SetParticipants({
         CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
+	//	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &tester)
 	//	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &enemybot)
         CreateComputer(Util::GetRaceFromString(enemyRaceString)),
     });

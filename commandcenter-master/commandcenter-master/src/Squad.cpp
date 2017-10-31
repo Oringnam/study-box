@@ -1,5 +1,5 @@
 #include "Squad.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 
 Squad::Squad(XelsNaga & bot)

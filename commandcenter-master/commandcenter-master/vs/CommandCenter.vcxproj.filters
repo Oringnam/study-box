@@ -87,7 +87,6 @@
     <ClCompile Include="..\src\SquadOrder.cpp">
       <Filter>micro</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\CCBot.cpp" />
     <ClCompile Include="..\src\CombatCommander.cpp">
       <Filter>micro</Filter>
     </ClCompile>
@@ -97,6 +96,7 @@
     <ClCompile Include="..\src\TechTree.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\XelsNaga.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\BaseLocationManager.h">
@@ -199,7 +199,7 @@
     <ClInclude Include="..\src\TechTree.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\CCBot.h" />
+    <ClInclude Include="..\src\XelsNaga.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="global">

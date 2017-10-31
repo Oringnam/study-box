@@ -1,5 +1,5 @@
 #include "BuildOrderQueue.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 
 BuildOrderQueue::BuildOrderQueue(XelsNaga & bot)
     : m_bot(bot)

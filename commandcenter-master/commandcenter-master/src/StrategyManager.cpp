@@ -1,5 +1,5 @@
 #include "StrategyManager.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "JSONTools.h"
 #include "Util.h"
 #include "BuildType.h"

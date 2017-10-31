@@ -1,6 +1,6 @@
 #include "sc2api/sc2_api.h"
 
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 
 XelsNaga::XelsNaga()

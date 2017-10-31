@@ -1,6 +1,6 @@
 #include "UnitInfoManager.h"
 #include "Util.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 
 #include <sstream>
 

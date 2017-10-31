@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "BuildingManager.h"
 #include "Micro.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 
 BuildingManager::BuildingManager(XelsNaga & bot)

@@ -1,5 +1,5 @@
 #include "MicroManager.h"
-#include "CCBot.h"
+#include "XelsNaga.h"
 #include "Util.h"
 
 MicroManager::MicroManager(XelsNaga & bot)

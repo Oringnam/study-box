@@ -1041,3 +1041,50 @@ void CombatCommander::updateWorkerDefenseSquad()
 	}
 	*/
 }
+
+
+
+
+
+
+
+
+
+
+
+2017. 11 .1 
+1. 일꾼 러쉬
+1) 보고서 참조
+
+
+** CombatCommander의 updateDefenseSquadUnits() 함수 초반에 일꾼이면 방어 스쿼드로 구성하지 않도록
+// add
+		if (Util::IsWorker(*unit)) continue;
+
+
+
+2. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2017.11.4
+테스터 만들기
+Tester 클래스를 XelsNaga를 상속받아 만들기
+XelsNaga의 변수들을 protected로 변경
+
+main에서 Tester봇을 먼저 변수로 두기 
+--> 그래야 컨트롤이 가능해짐
+

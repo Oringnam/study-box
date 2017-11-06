@@ -64,7 +64,7 @@ const BuildOrder & StrategyManager::getLoopBookBuildOrder() const
 	}
 	else
 	{
-		BOT_ASSERT(false, "Strategy not found: %s, returning empty initial build order", m_bot.Config().StrategyName.c_str());
+		BOT_ASSERT(false, "Strategy not found: %s, returning empty loop build order", m_bot.Config().StrategyName.c_str());
 		return m_emptyBuildOrder;
 	}
 }

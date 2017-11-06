@@ -14,6 +14,8 @@ class ProductionManager
     BuildingManager m_buildingManager;
     BuildOrderQueue m_queue;
 
+	UnitTag nexusNum;
+
     UnitTag getClosestUnitToPosition(const std::vector<UnitTag> & units, sc2::Point2D closestTo);
     bool    meetsReservedResources(const BuildType & type);
     bool    canMakeNow(UnitTag producer, const BuildType & type);

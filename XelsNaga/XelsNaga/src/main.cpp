@@ -70,10 +70,10 @@ int main(int argc, char* argv[])
     coordinator.SetRealtime(true);
 
     coordinator.SetParticipants({
-    //    CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
-		CreateParticipant(Util::GetRaceFromString(enemyRaceString), &tester),
-		CreateParticipant(Util::GetRaceFromString(botRaceString), &enemybot)
-    //    CreateComputer(Util::GetRaceFromString(enemyRaceString), sc2::Difficulty::VeryHard)
+        CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
+	//	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &tester),
+	//	CreateParticipant(Util::GetRaceFromString(botRaceString), &enemybot)
+        CreateComputer(Util::GetRaceFromString(enemyRaceString), sc2::Difficulty::VeryHard)
     });
 
     // Start the game.

@@ -182,8 +182,11 @@ void ProductionManager::create(UnitTag producer, BuildOrderItem & item)
 	else if (item.type.isUnit())
 	{
 		Micro::SmartTrain(producer, item.type.getUnitTypeID(), m_bot);
+		if (item.type.getUnitTypeID() == sc2::UNIT_TYPEID::PROTOSS_PROBE) {
+			nexusNum = producer;
+		}
 		if (item.type.getUnitTypeID() == sc2::UNIT_TYPEID::PROTOSS_ZEALOT) {
-			m_bot.Actions()->UnitCommand(4330881025, sc2::ABILITY_ID::EFFECT_CHRONOBOOST, producer);
+			m_bot.Actions()->UnitCommand(nexusNum, sc2::ABILITY_ID::EFFECT_CHRONOBOOST, producer);
 		}
     }
     else if (item.type.isUpgrade())

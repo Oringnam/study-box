@@ -1088,3 +1088,62 @@ XelsNaga의 변수들을 protected로 변경
 main에서 Tester봇을 먼저 변수로 두기 
 --> 그래야 컨트롤이 가능해짐
 
+
+
+
+
+
+
+
+
+
+
+2017. 11. 7 
+파일런 스페이싱
+BuildPlacer.cpp
+
+1. 미네랄 사이에 건물 안짓도록
+bool BuildingPlacer::isInResourceBox(int x, int y) const
+{
+ //   return false;
+    return m_bot.Bases().getPlayerStartingBaseLocation(Players::Self)->isInResourceBox(x, y);
+}
+
+항상 return false하던 것 블록
+
+
+2. 파일런은 공간을 넓게
+canBuildHereWithSpace() 내부
+    // if we can't build here, or space is reserved, or it's in the resource box, we can't build here
+	if (b.type == sc2::UNIT_TYPEID::PROTOSS_PYLON)
+	{	
+		for (int x = startx - 2; x < endx + 2; x += 2)
+		{
+			for (int y = starty - 2; y < endy + 2; y += 2)
+			{
+				if (!Util::IsRefineryType(b.type))
+				{
+					if (!buildable(b, x, y) || m_reserveMap[x][y])
+					{
+						
+						return false;
+					}
+				}
+			}
+		}
+	}
+	else {
+		for (int x = startx; x < endx; x++)
+		{
+			for (int y = starty; y < endy; y++)
+			{
+				if (!Util::IsRefineryType(b.type))
+				{
+					if (!buildable(b, x, y) || m_reserveMap[x][y])
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}

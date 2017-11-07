@@ -3,7 +3,6 @@
 #include "XelsNaga.h"
 #include "Building.h"
 #include "Util.h"
-static int flag = 0;
 
 BuildingPlacer::BuildingPlacer(XelsNaga & bot)
     : m_bot(bot)
@@ -18,7 +17,7 @@ void BuildingPlacer::onStart()
 
 bool BuildingPlacer::isInResourceBox(int x, int y) const
 {
-    return false;
+ //   return false;
     return m_bot.Bases().getPlayerStartingBaseLocation(Players::Self)->isInResourceBox(x, y);
 }
 
@@ -83,7 +82,7 @@ bool BuildingPlacer::canBuildHereWithSpace(int bx, int by, const Building & b, i
     }
 	
     // if we can't build here, or space is reserved, or it's in the resource box, we can't build here
-	if (b.type == 60 && flag <= 2)
+	if (b.type == sc2::UNIT_TYPEID::PROTOSS_PYLON)
 	{	
 		for (int x = startx - 2; x < endx + 2; x += 2)
 		{
@@ -100,35 +99,22 @@ bool BuildingPlacer::canBuildHereWithSpace(int bx, int by, const Building & b, i
 			}
 		}
 	}
-	if (b.type == 60 && flag > 2 && flag < 9)
-	{
-		for (int y = starty - 2; y < endy + 2; y += 2)
+	else {
+		for (int x = startx; x < endx; x++)
 		{
+			for (int y = starty; y < endy; y++)
+			{
 				if (!Util::IsRefineryType(b.type))
-				{	
-					int x = startx;
+				{
 					if (!buildable(b, x, y) || m_reserveMap[x][y])
 					{
-
 						return false;
 					}
-				}	
+				}
+			}
 		}
 	}
-	for (int x = startx; x < endx; x++)
-    {
-        for (int y = starty; y < endy; y++)
-        {
-            if (!Util::IsRefineryType(b.type))
-            {
-                if (!buildable(b, x, y) || m_reserveMap[x][y])
-				{
-                    return false;
-                }
-            }
-        }
-    }
-	flag++;
+
     return true;
 }
 

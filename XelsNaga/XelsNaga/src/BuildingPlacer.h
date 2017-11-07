@@ -18,7 +18,6 @@ class BuildingPlacer
     bool			isInResourceBox(int x, int y) const;
     bool			tileOverlapsBaseLocation(int x, int y, sc2::UnitTypeID type) const;
 
-
 public:
 
     BuildingPlacer(XelsNaga & bot);

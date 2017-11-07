@@ -1147,3 +1147,61 @@ canBuildHereWithSpace() 내부
 			}
 		}
 	}
+
+
+
+
+
+일꾼 - combatUnit 처리
+공격 조건이 만족되기 전까지는 combatUnit에 입력하지 않는다.
+GameCommander 클래스
+--> 두개의 솔루션
+우선 일꾼의 combat type을 false로
+
+bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, XelsNaga & bot)
+{
+    if (IsWorkerType(type)) { return false; }
+    if (IsSupplyProviderType(type)) { return false; }
+    if (bot.Data(type).isBuilding) { return false; }
+
+    if (type == sc2::UNIT_TYPEID::ZERG_EGG) { return false; }
+    if (type == sc2::UNIT_TYPEID::ZERG_LARVA) { return false; }
+
+    return true;
+}
+
+==> GameCommander 내 함수
+// sets combat units to be passed to CombatCommander
+void GameCommander::setCombatUnits()
+{
+    for (auto & unitTag : m_validUnits)
+    {
+        const sc2::Unit * unit = m_bot.GetUnit(unitTag);
+
+        BOT_ASSERT(unit, "Have a null unit in our valid units\n");
+
+		// solution 1
+		// set workers combat type is true
+    /*    if (!isAssigned(unitTag) && Util::IsCombatUnitType(unit->unit_type, m_bot))
+        {
+			if (Util::IsWorker(*unit) && m_validUnits.size() < m_bot.Config().CombatUnitsForAttack);
+			else assignUnit(unitTag, m_combatUnits);
+        }
+		*/
+
+		// solution 2
+		// set workers combat type is false
+		if (!isAssigned(unitTag)) 
+		{
+			if (Util::IsCombatUnitType(unit->unit_type, m_bot))
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+			else if (Util::IsWorker(*unit) && m_validUnits.size() >= m_bot.Config().CombatUnitsForAttack)
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+		}
+    }
+}
+

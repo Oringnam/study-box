@@ -217,7 +217,7 @@ int Util::GetPlayer(const sc2::Unit & unit)
 
 bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, XelsNaga & bot)
 {
-    if (IsWorkerType(type)) { return true; }
+    if (IsWorkerType(type)) { return false; }
     if (IsSupplyProviderType(type)) { return false; }
     if (bot.Data(type).isBuilding) { return false; }
 

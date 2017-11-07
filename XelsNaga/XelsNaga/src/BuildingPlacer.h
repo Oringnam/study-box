@@ -19,7 +19,6 @@ class BuildingPlacer
     bool			tileOverlapsBaseLocation(int x, int y, sc2::UnitTypeID type) const;
 
 public:
-
     BuildingPlacer(XelsNaga & bot);
 
     void onStart();

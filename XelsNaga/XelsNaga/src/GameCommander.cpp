@@ -125,10 +125,28 @@ void GameCommander::setCombatUnits()
 
         BOT_ASSERT(unit, "Have a null unit in our valid units\n");
 
-        if (!isAssigned(unitTag) && Util::IsCombatUnitType(unit->unit_type, m_bot))
+		// solution 1
+		// set workers combat type is true
+    /*    if (!isAssigned(unitTag) && Util::IsCombatUnitType(unit->unit_type, m_bot))
         {
-            assignUnit(unitTag, m_combatUnits);
+			if (Util::IsWorker(*unit) && m_validUnits.size() < m_bot.Config().CombatUnitsForAttack);
+			else assignUnit(unitTag, m_combatUnits);
         }
+		*/
+
+		// solution 2
+		// set workers combat type is false
+		if (!isAssigned(unitTag)) 
+		{
+			if (Util::IsCombatUnitType(unit->unit_type, m_bot))
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+			else if (Util::IsWorker(*unit) && m_validUnits.size() >= m_bot.Config().CombatUnitsForAttack)
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+		}
     }
 }
 

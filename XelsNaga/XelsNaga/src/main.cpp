@@ -75,6 +75,8 @@ int main(int argc, char* argv[])
 	//	CreateParticipant(Util::GetRaceFromString(botRaceString), &enemybot)
         CreateComputer(Util::GetRaceFromString(enemyRaceString), sc2::Difficulty::VeryHard)
     });
+	
+//	coordinator.LoadReplayList("Honorgrounds LE(11).SC2Replay");
 
     // Start the game.
     coordinator.LaunchStarcraft();

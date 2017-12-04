@@ -17,7 +17,7 @@
     {
         "KiteWithRangedUnits"       : false,
         "ScoutHarassEnemy"          : true,
-        "CombatUnitsForAttack"      : 36
+        "CombatUnitsForAttack"      : 16
     },
     
     "Macro" :

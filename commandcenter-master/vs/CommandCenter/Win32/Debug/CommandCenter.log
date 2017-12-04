@@ -1,0 +1,71 @@
+﻿  BaseLocation.cpp
+  BaseLocationManager.cpp
+  BotAssert.cpp
+  BotConfig.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BaseLocation.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BaseLocationManager.cpp)
+  Building.cpp
+  BuildingData.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BotConfig.cpp)
+  BuildingManager.cpp
+  BuildingPlacer.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\Building.cpp)
+  BuildOrder.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BuildingData.cpp)
+  BuildOrderQueue.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BuildingManager.cpp)
+  CCBot.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BuildingPlacer.cpp)
+  CombatCommander.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BuildOrderQueue.cpp)
+  Condition.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\BuildOrder.cpp)
+  DistanceMap.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\CCBot.cpp)
+  GameCommander.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\CombatCommander.cpp)
+  JSONTools.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\Condition.cpp)
+  main.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\DistanceMap.cpp)
+  MapTools.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\GameCommander.cpp)
+  MeleeManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\JSONTools.cpp)
+  MetaType.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\main.cpp)
+  MicroManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\MapTools.cpp)
+  ProductionManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\MeleeManager.cpp)
+  RangedManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\MetaType.cpp)
+  ScoutManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\MicroManager.cpp)
+  Squad.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\ProductionManager.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\RangedManager.cpp)
+  SquadData.cpp
+  SquadOrder.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\ScoutManager.cpp)
+  StrategyManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\Squad.cpp)
+  TechTree.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\SquadData.cpp)
+  Unit.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\SquadOrder.cpp)
+  UnitData.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\StrategyManager.cpp)
+  UnitInfoManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\TechTree.cpp)
+  UnitType.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\UnitData.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\Unit.cpp)
+  Util.cpp
+  WorkerData.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\UnitInfoManager.cpp)
+  WorkerManager.cpp
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\UnitType.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\WorkerData.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\Util.cpp)
+c:\users\xonao\dropbox\sc2\commandcenter-master\src\common.h(28): fatal error C1083: 포함 파일을 열 수 없습니다. 'BWAPI.h': No such file or directory (소스 파일 컴파일 중 ..\src\WorkerManager.cpp)

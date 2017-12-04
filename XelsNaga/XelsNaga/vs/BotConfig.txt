@@ -52,7 +52,7 @@
     
     "Strategy" :
     {
-        "Protoss"                   : "Protoss_ZealotRush",
+        "Protoss"                   : "Protoss_Test",
         "Terran"                    : "Terran_MarineRush",
         "Zerg"                      : "Zerg_2HatchRoach",
         
@@ -61,6 +61,7 @@
         "Strategies" :
         {
             "Protoss_ZealotRush"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe", "Pylon","Probe","Probe","Gateway", "Probe", "Pylon", "Probe", "Gateway", "Gateway","Zealot","CyberneticsCore","Zealot","Assimilator","Zealot", "Probe","Zealot","Pylon", "Probe" , "Zealot", "Probe","Zealot", "Pylon","Zealot", "Pylon","TwilightCouncil", "Zealot","Zealot", "Zealot","Pylon","Zealot","Zealot","Charge","Zealot","Adept","Adept","Adept","Zealot","Zealot", "Adept","Adept","Adept","Adept","Adept","Adept","Zealot","Zealot","Zealot"], "LoopBuildOrder" : ["Pylon", "Zealot", "Zealot", "Adept"]},
+	"Protoss_Test"    : { "Race" : "Protoss", "OpeningBuildOrder" : ["Probe"], "LoopBuildOrder" : ["Probe"]},
 
             "Terran_MarineRush"     : { "Race" : "Terran",  "OpeningBuildOrder" : ["SCV", "SCV", "SupplyDepot", "SCV", "SCV", "Barracks", "Barracks", "Barracks", "Barracks", "SupplyDepot", "SupplyDepot", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine", "Marine"] },
 

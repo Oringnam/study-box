@@ -28,15 +28,20 @@ void WorkerData::updateAllWorkerData()
     // for each of our Workers
     for (auto & workerTag : getWorkers())
     {
-        auto worker = m_bot.GetUnit(workerTag);
-        if (worker == nullptr) { continue; }
+		try {
+			auto worker = m_bot.GetUnit(workerTag);
+			//if (worker == nullptr) { continue; }
+			if (worker == nullptr) throw worker;
 
-        // if it's idle
-        if (getWorkerJob(workerTag) == WorkerJobs::None)
-        {
-            setWorkerJob(workerTag, WorkerJobs::Idle);
-        }
-
+			// if it's idle
+			if (getWorkerJob(workerTag) == WorkerJobs::None)
+			{
+				setWorkerJob(workerTag, WorkerJobs::Idle);
+			}
+		}
+		catch (int e) {
+			std::cout << "worker is nullptr\n";
+		}
         // TODO: If it's a gas worker whose refinery has been destroyed, set to minerals
     }
 
@@ -57,6 +62,9 @@ void WorkerData::updateAllWorkerData()
     {
         workerDestroyed(tag);
     }
+
+	// add
+	setAssignedData();
 }
 
 void WorkerData::workerDestroyed(const UnitTag & unit)
@@ -93,10 +101,20 @@ void WorkerData::setWorkerJob(const UnitTag & unit, int job, UnitTag jobUnitTag)
 
         // increase the worker count of this depot
         m_workerDepotMap[unit] = jobUnitTag;
-        m_depotWorkerCount[jobUnitTag]++;
+      //  m_depotWorkerCount[jobUnitTag]++;
+
+		UnitTag hall = unit;
+		for (auto m : m_townhall) {
+			if (!m.second) {
+				hall = m.first;
+			}
+		}
+
+		if(hall != unit) m_depotWorkerCount[hall]++;
+		else	m_depotWorkerCount[jobUnitTag]++;
 
         // find the mineral to mine and mine it
-        UnitTag mineralToMine = getMineralToMine(unit);
+        UnitTag mineralToMine = getMineralToMine(hall);
         Micro::SmartRightClick(unit, mineralToMine, m_bot);
     }
     else if (job == WorkerJobs::Gas)
@@ -279,4 +297,35 @@ void WorkerData::drawDepotDebugInfo()
 const std::set<UnitTag> & WorkerData::getWorkers() const
 {
     return m_workers;
+}
+
+// add
+void WorkerData::setAssignedData() {
+	int max = 16;
+
+	// for each unit we have
+	for (auto & unit : m_bot.UnitInfo().getUnits(Players::Self))
+	{
+		// if that unit is a townhall
+		if (Util::IsTownHall(unit) && Util::IsCompleted(unit))
+		{
+			bool full = true;
+
+			// get the number of workers currently assigned to it
+			int numAssigned = getNumAssignedWorkers(unit);
+	//		std::cout << "nexus : "<<unit<<"  assigned num : " << numAssigned << std::endl;
+
+			if (numAssigned < max)
+			{
+				full = false;
+			}
+
+			std::pair<std::map<sc2::Unit, bool>::iterator, bool> pr;
+			pr = m_townhall.insert(std::make_pair(unit, full));
+
+			if (!pr.second) {
+				pr.first->second = full;
+			}
+		}
+	}
 }

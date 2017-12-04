@@ -19,6 +19,7 @@ void WorkerManager::onStart()
 void WorkerManager::onFrame()
 {
     m_workerData.updateAllWorkerData();
+
     handleGasWorkers();
     handleIdleWorkers();
 
@@ -127,14 +128,14 @@ UnitTag WorkerManager::getClosestMineralWorkerTo(const sc2::Point2D & pos) const
 // set a worker to mine minerals
 void WorkerManager::setMineralWorker(const sc2::Unit & unit)
 {
-    // check if there is a mineral available to send the worker to
-    UnitTag depot = getClosestDepot(unit);
+	// check if there is a mineral available to send the worker to
+	auto depot = getClosestDepot(unit);
 
-    // if there is a valid mineral
-    if (depot)
-    {
-        // update m_workerData with the new job
-        m_workerData.setWorkerJob(unit, WorkerJobs::Minerals, depot);
+	// if there is a valid mineral
+	if (depot)
+	{
+		// update m_workerData with the new job
+		m_workerData.setWorkerJob(unit, WorkerJobs::Minerals, depot);
     }
 }
 
@@ -274,3 +275,5 @@ int WorkerManager::getNumGasWorkers()
     return m_workerData.getWorkerJobCount(WorkerJobs::Gas);
 
 }
+
+

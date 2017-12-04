@@ -123,24 +123,46 @@ sc2::Point2D BuildingPlacer::getBuildLocationNear(const Building & b, int buildD
     Timer t;
     t.start();
 
-    // get the precomputed vector of tile positions which are sorted closes to this location
-    auto & closestToBuilding = m_bot.Map().getClosestTilesTo(b.desiredPosition);
+	// if b is nexus
+	if (b.type == sc2::UNIT_TYPEID::PROTOSS_NEXUS) {
+		auto & closestToBuilding = m_bot.Map().getClosestTilesTo(m_bot.Bases().getNextExpansion(Players::Self));
 
-    double ms1 = t.getElapsedTimeInMilliSec();
+		// iterate through the list until we've found a suitable location
+		for (size_t i(0); i < closestToBuilding.size(); ++i)
+		{
+			auto & pos = closestToBuilding[i];
 
-    // iterate through the list until we've found a suitable location
-    for (size_t i(0); i < closestToBuilding.size(); ++i)
-    {
-        auto & pos = closestToBuilding[i];
+			if (canBuildHereWithSpace((int)pos.x, (int)pos.y, b, buildDist))
+			{
+				double ms = t.getElapsedTimeInMilliSec();
+				//printf("Building Placer Took %d iterations, lasting %lf ms @ %lf iterations/ms, %lf setup ms\n", (int)i, ms, (i / ms), ms1);
 
-        if (canBuildHereWithSpace((int)pos.x, (int)pos.y, b, buildDist))
-        {
-            double ms = t.getElapsedTimeInMilliSec();
-            //printf("Building Placer Took %d iterations, lasting %lf ms @ %lf iterations/ms, %lf setup ms\n", (int)i, ms, (i / ms), ms1);
+				return pos;
+			}
+		}
+	}
+	
+	else {
+		// get the precomputed vector of tile positions which are sorted closes to this location
+		auto & closestToBuilding = m_bot.Map().getClosestTilesTo(b.desiredPosition);
 
-            return pos;
-        }
-    }
+		double ms1 = t.getElapsedTimeInMilliSec();
+
+		// iterate through the list until we've found a suitable location
+		for (size_t i(0); i < closestToBuilding.size(); ++i)
+		{
+			auto & pos = closestToBuilding[i];
+
+			if (canBuildHereWithSpace((int)pos.x, (int)pos.y, b, buildDist))
+			{
+				double ms = t.getElapsedTimeInMilliSec();
+				//printf("Building Placer Took %d iterations, lasting %lf ms @ %lf iterations/ms, %lf setup ms\n", (int)i, ms, (i / ms), ms1);
+
+				return pos;
+			}
+		}
+
+	}
 
     double ms = t.getElapsedTimeInMilliSec();
     //printf("Building Placer Took %lf ms\n", ms);

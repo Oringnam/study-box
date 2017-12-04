@@ -105,7 +105,7 @@ void GameCommander::setScoutUnits()
 
 bool GameCommander::shouldSendInitialScout()
 {
-    return true;
+    return false;
 
     switch (m_bot.GetPlayerRace(Players::Self))
     {

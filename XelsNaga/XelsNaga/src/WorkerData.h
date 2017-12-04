@@ -21,6 +21,8 @@ class WorkerData
     std::map<UnitTag, UnitTag>  m_workerRefineryMap;
     std::map<UnitTag, UnitTag>  m_workerDepotMap;
 
+	std::map<sc2::Unit, bool>	m_townhall;
+
     void clearPreviousJob(const UnitTag & unit);
 
 public:
@@ -40,4 +42,8 @@ public:
     UnitTag getWorkerDepot(const UnitTag & unit) const;
     const char * getJobCode(const UnitTag & unit);
     const std::set<UnitTag> & getWorkers() const;
+
+
+	// add
+	void		setAssignedData();
 };

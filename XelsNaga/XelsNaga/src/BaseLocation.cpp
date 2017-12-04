@@ -65,7 +65,7 @@ BaseLocation::BaseLocation(XelsNaga & bot, int baseID, const std::vector<sc2::Un
     m_distanceMap = m_bot.Map().getDistanceMap(m_centerOfResources);
 
     // check to see if this is a start location for the map
-    for (auto & pos : m_bot.Observation()->GetGameInfo().enemy_start_locations)
+    for (auto & pos : m_bot.GetStartLocations())
     {
         if (containsPosition(pos))
         {
@@ -93,7 +93,9 @@ BaseLocation::BaseLocation(XelsNaga & bot, int baseID, const std::vector<sc2::Un
         for (auto & tile : getClosestTiles())
         {
             // TODO: m_depotPosition = depot position for this base location
-        }
+			m_depotPosition = tile;
+			break;
+		}
     }
 }
 

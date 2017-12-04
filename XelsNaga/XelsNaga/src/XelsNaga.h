@@ -29,6 +29,8 @@ protected:
 
     GameCommander           m_gameCommander;
 
+	std::vector<sc2::Point2D> m_baseLocations;
+
     void OnError(const std::vector<sc2::ClientError> & client_errors, 
                  const std::vector<std::string> & protocol_errors = {}) override;
 
@@ -50,6 +52,9 @@ public:
     const sc2::Race & GetPlayerRace(int player) const;
     sc2::Point2D GetStartLocation() const;
     const sc2::Unit * GetUnit(const UnitTag & tag) const;
+	
+	// add
+	const std::vector<sc2::Point2D> & GetStartLocations() const;
 };
 
 

@@ -323,7 +323,7 @@ sc2::Point2D BaseLocationManager::getNextExpansion(int player) const
     for (auto & base : getBaseLocations())
     {
         // skip mineral only and starting locations (TODO: fix this)
-        if (base->isMineralOnly() || base->isStartLocation())
+        if (base->isStartLocation())
         {
             continue;
         }

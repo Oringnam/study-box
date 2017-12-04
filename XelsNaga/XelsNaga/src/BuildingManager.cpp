@@ -422,7 +422,7 @@ sc2::Point2D BuildingManager::getBuildingLocation(const Building & b)
     if (Util::IsTownHallType(b.type))
     {
         // TODO: fix this so we can actually expand
-        //return m_bot.Bases().getNextExpansion(Players::Self);
+        // return m_bot.Bases().getNextExpansion(Players::Self);
     }
 
     // get a position within our region

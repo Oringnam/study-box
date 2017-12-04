@@ -18,6 +18,11 @@ XelsNaga::XelsNaga()
 void XelsNaga::OnGameStart() 
 {
     m_config.readConfigFile();
+
+	for (auto & loc : Observation()->GetGameInfo().enemy_start_locations)
+	{
+		m_baseLocations.push_back(loc);
+	}
     
     // get my race
     auto playerID = Observation()->GetPlayerID();
@@ -118,6 +123,12 @@ const sc2::Unit * XelsNaga::GetUnit(const UnitTag & tag) const
 sc2::Point2D XelsNaga::GetStartLocation() const
 {
     return Observation()->GetStartLocation();
+}
+
+// add
+const std::vector<sc2::Point2D> & XelsNaga::GetStartLocations() const
+{
+	return m_baseLocations;
 }
 
 void XelsNaga::OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors)

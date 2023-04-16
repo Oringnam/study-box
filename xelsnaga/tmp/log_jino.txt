@@ -1,0 +1,38 @@
+103번째줄 
+if 에서 isWorker주석처리
+
+Util.cpp 
+ CombatCommander import
+ 
+
+Util.cpp
+221 line : isWorkerType -> return true;
+
+
+BuildingManager.cpp
+425 line : // delete
+
+
+
+19 인원
+
+CombatCommander.cpp
+103 line
+!Utill::isWorker(*unit)주석
+
+142 line 
+if (workerDefenseSquad.size() <= enemyWorkersInRegion.size()) {
+ change for (Zerging Scout)
+if (workerDefenseSquad.size() < enemyWorkersInRegion.size()) {
+
+185 line
+if ~ 주석처리 제거
+
+322 line
+SquardOrder 32 * 25 -> 10 * 10
+
+407 line
+~else if 추가 
+
+GameCommander.cpp
+82 line 주석처리

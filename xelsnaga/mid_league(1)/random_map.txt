@@ -1,0 +1,40 @@
+#include <string>
+#include <vector>
+#include <iostream>
+#include <random>
+
+using namespace std;
+
+const int STUDENTS = 8;
+
+int main(void) {
+	vector<string> maps_player2;
+	vector<string> maps_player4;
+	int seed[STUDENTS];
+	long long RSN_2 = 0;
+	long long RSN_4 = 0;
+
+	maps_player2.push_back("AbyssalReefLE.SC2Map");
+	maps_player2.push_back("BelShirVestigeLE.SC2Map");
+	maps_player2.push_back("MechDepotLE.SC2Map");
+
+	maps_player4.push_back("CactusValleyLE.SC2Map");
+	maps_player4.push_back("HonorgroundsLE.SC2Map");
+	maps_player4.push_back("FrostLE.SC2Map");
+
+	for (int i = 0; i < STUDENTS; i++) {
+		cin >> seed[i];
+	}
+
+	for (int i = 0; i < STUDENTS; i++) {
+		RSN_2 += rand() % seed[i];
+		RSN_4 += rand() % seed[i];
+	}
+
+	RSN_2 %= 3;
+	RSN_4 %= 3;
+
+	cout << "2 players map : " << maps_player2[RSN_2] << endl;
+	cout << "4 players map : " << maps_player4[RSN_4] << endl;
+
+}

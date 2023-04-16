@@ -1,0 +1,1211 @@
+2017.10.03
+main.cpp	==> line. 72 이후 함수 호출을, 인공지능 두개로 변경
+		-  함수 정보 (변경 내용, 주석이 변경 전)
+coordinator.SetParticipants({
+        
+	CreateParticipant(Util::GetRaceFromString(botRaceString), &bot),
+		
+	CreateParticipant(Util::GetRaceFromString(enemyRaceString), &enemybot)
+     
+	//   CreateComputer(Util::GetRaceFromString(enemyRaceString))
+    
+});
+
+TechTree.cpp	==> initUnitTypeData() 함수 내
+		- m_upgradeData[0] = TypeData(); 을 m_unitTypeData[0] = TypeData(); 로 수정
+		==> const TypeData & TechTree::getData(const sc2::UpgradeID & type)  const 함수 내
+		- return m_unitTypeData.at(0); 을 return m_upgradeData.at(0); 로 수정
+
+
+**참고 : 특정 종족에 대한 전략 만들고 싶다면, UseEnemySpecificStrategy를 Strategy 안에(StManager 122 참조)
+
+stManager.cpp line 164~
+		==> 전략 반복 진행 하기 위한 부분 (아직 미작성)
+
+2017.10.04
+** 동작 원리 분석 : onStart 실행 후, onFrame이 반복 실행. (스레드 형태로 반복 콜을 하는듯)
+** 반복생산은 BuildOrderQueue 에서 m_queue가 비면 다시 실행시키는 방식으로?
+	--> 그 위치는 아마도 ProductionManager.cpp 의 line 50, manageBuildOrderQueue() 함수 내
+
+** Utill.cpp의 line 218
+bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, CCBot & bot)
+{
+    
+	if (IsWorkerType(type)) { return true; }
+    
+	if (IsSupplyProviderType(type)) { return false; }
+    
+	if (bot.Data(type).isBuilding) { return false; }
+
+ 
+   
+	if (type == sc2::UNIT_TYPEID::ZERG_EGG) { return false; }
+    
+	if (type == sc2::UNIT_TYPEID::ZERG_LARVA) { return false; }
+
+  
+  
+	return true;
+
+}
+첫번째, 일꾼의 타입을 true로 변경했더니, 정찰해온 일꾼들을 공격함. 그렇지만 진짜 공격유닛은 공격하지 않는다.
+
+
+2017.10.6
+StrategyManager 헤더와 소스 수정 중.
+onFrame에 반복생산 구문을 넣기 위해, 변수 재조정 필요
+==> 아니엇음, ProductionManager.cpp line 50~ manageBuildOrderQueue() 함수 내에서 동작 실험 (ProductionManager의 onFrame()에서 호출되는 함수)
+// if there is nothing in the queue, oh well
+    if (m_queue.isEmpty())
+    {
+		setBuildOrder(m_bot.Strategy().getOpeningBookBuildOrder());
+        return;
+    }
+
+
+** 대부분의 로직이 존재하는 클래스는 CCBot을 가지고 있음
+
+// 다음 과제, 유닛이 모이기 전에 공격가는거 안하도록 혹은 일꾼의 공격성을 줄이되, 정찰온 일꾼은 방어하는 형식으로
+
+** 적 정찰을 방어하기
+- 일꾼의 공격성을 제거하였을 경우, 공격 유닛이 없었다면, ScoutDefenseSquad가 형성이 안됨.
+- 그렇기 때문에 기지가 부셔질 때까지 방치하는것.
+- 대안 ; 공격 유닛이 없다면, 일꾼 하나를 공격 유닛으로 넣는다?
+
+* CombatCommander의 enemyUnitsInRegion은 매우 중요 (내 영역 안의 적의 수를 파악할 수 있다.)
+
+** 적 정찰 일꾼으로 방어하기
+- 이전에 했던, 일꾼의 공격성 false로 되돌리기 (Util.cpp)
+CombatCommander.cpp 의 line 110~ updateScoutDefenseSquad() 함수 내
+- if (m_combatUnits.empty()) 구문 블럭
+- line 147
+//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		UnitTag workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+입력 변수 수정. (m_combatUnits 의 필요성을 못느낌. 아마도 실수일 거라 생각)
+
+CombatCommander.h 함수 정보 변경
+ UnitTag         findClosestDefender(const Squad & defenseSquad, const sc2::Point2D & pos);
+//    UnitTag         findClosestWorkerTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target);
+
+
+이에 맞추어서 함수 정보 또한 변경 (CombatCommander.cpp line 446 for문)
+   // for (auto & unitTag : unitsToAssign)
+	for(auto & unitTag : m_bot.UnitInfo().getUnits(Players::Self))
+
+
+
+- 함수 정리	updateScoutDefenseSquad()
+	// if there's an enemy worker in our region then assign someone to chase him
+	bool assignScoutDefender = (enemyUnitsInRegion.size() == 1) && Util::IsWorker(*m_bot.GetUnit(enemyUnitsInRegion[0]));
+함수 앞쪽으로 이동
+
+
+
+- updateScoutDefenseSquad() 함수 내, 정찰병 제재 유닛 선정 방식
+ ( 병력이 없는 경우, 병력이 있는 경우 )
+		UnitTag workerDefenderTag;
+		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}
+수정
+
+==> 새로운 findClosestCombatTo() 함수
+UnitTag CombatCommander::findClosestCombatTo(std::vector<UnitTag> & unitsToAssign, const sc2::Point2D & target)
+{
+	UnitTag ret = 0;
+	float closestDist = std::numeric_limits<float>::max();
+
+	// for each of our workers
+	// for (auto & unitTag : unitsToAssign)
+	for (auto & unitTag : unitsToAssign)
+	{
+		auto unit = m_bot.GetUnit(unitTag);
+		BOT_ASSERT(unit, "unit to assign was null");
+
+		float dist = Util::Dist(unit->pos, target);
+
+		if (dist < closestDist)
+		{
+			ret = unitTag;
+			dist = closestDist;
+		}
+	}
+
+	return ret;
+}
+
+
+
+******** 실험중 에러 발생
+!Assert:   builderUnit
+File:      c:\users\xonao\dropbox\sc2\commandcenter-master\commandcenter-master\src\buildingmanager.cpp
+Message:   null builder unit
+Line:      152
+Time:      06-10-2017 21-07-48
+
+*******************
+
+
+다음 과제 ; 위 에러 확인 / 빌드 확립 / 두개의 프로젝트로 구분(나의 빌드/ 상대 빌드 )
+
+
+
+
+2017.10.7
+// 빌드 반복 좀더 확실하게
+** 좀더 매끄러운 반복
+ProductionManager 에 새로운 함수 추가.
+기존의 setBuildOrder() 함수는 m_queue를 초기화 하여서 빌드가 꼬임.
+새로운 renewBuildOrder() 함수는 초기화하지 않고 기존의 m_queue를 이어서 사용
+
+ProductionManager.h
+void    renewBuildOrder(const BuildOrder & buildOrder);
+
+ProductionManager.cpp
+// add
+void ProductionManager::renewBuildOrder(const BuildOrder & buildOrder)
+{	
+	size_t i(m_queue.size());
+
+	for (i; i<buildOrder.size(); ++i)
+	{
+		m_queue.queueAsLowestPriority(buildOrder[i], true);
+	}
+}
+
+** 위처럼 수정하고 나니 위에서 발생했던 오류는 발생하지 않는다. 하지만 나중에라도 체크해야 됨.
+BuildingManager의 분석은 나중에
+
+** 빌드오더의 반복구문
+BotConfig 파일에 LoopBuildOrder 태그 추가
+
+StrategyManager.h 내 Strategy 구조체에 BuildOrder m_loopOrder 변수 추가
+struct Strategy
+{
+    std::string m_name;
+    sc2::Race   m_race;
+    int         m_wins;
+    int         m_losses;
+    BuildOrder  m_buildOrder;
+	BuildOrder	m_loopOrder;
+
+    Strategy();
+    Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder);
+};
+
+Strategy 구조체의 Constructur 개조
+ Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder); 에서
+ Strategy(const std::string & name, const sc2::Race & race, const BuildOrder & buildOrder, const BuildOrder & loopOrder);
+loop BuildOrder 추가 , 그리고 이에 맞추어서 StrategyManager.cpp 파일들도 변경
+
+==> readStrategyFile() 함수 내 마지막 전략추가함수
+addStrategy(name, Strategy(name, strategyRace, buildOrde)); 에서 
+addStrategy(name, Strategy(name, strategyRace, buildOrder, loopOrder)); 으로 변경
+
+StrategyManager에 새로운 getLoopBookBuildOrder() 함수 생성
+자세 내용
+const BuildOrder & StrategyManager::getLoopBookBuildOrder() const
+{
+	auto buildOrderIt = m_strategies.find(m_bot.Config().StrategyName);
+
+	// look for the build order in the build order map
+	if (buildOrderIt != std::end(m_strategies))
+	{
+		return (*buildOrderIt).second.m_loopOrder;
+	}
+	else
+	{
+		BOT_ASSERT(false, "Strategy not found: %s, returning empty initial build order", m_bot.Config().StrategyName.c_str());
+		return m_emptyBuildOrder;
+	}
+}
+-->getOpeningBookBuildOrder() 함수에서 m_buildOrder 를 m_loopOrder로 변경만하면 된다.
+
+==> ProductionManager.cpp
+manageBuildOrderQueue() 내 만약 큐가 비었을 경우, 위에 맞추어서 변경
+if (m_queue.isEmpty())
+    {
+		renewBuildOrder(m_bot.Strategy().getLoopBookBuildOrder());
+        return;
+    }
+
+++ 나중에 m_queue.isEmpty()가 아닌, 큐가 조금 남아있을 경우 추가하는 방식으로 변경해야한다.
+왜냐하면, 완전히 비면 새로 큐를 추가하는동안 생산이 멈춘다.
+
+++ 공격 스쿼드를 하나로 구성한다면, 빈집이 들어오는 경우, 방어하기 위해 돌아온다.
+이걸 전략적으로 사용할 수 있을 듯
+
+//*** 오류 발생.
+건물을 모두 부시기 직전? 자세히 확인은 못함
+콘솔창에는 오류가 표시되지 않았는데, 게임이 중단됨
+예상1. 게임이 종료되었는데, 다른 onFrame들이 계속 동작하려고해서 문제가 된거다.
+
+
+
+
+다음 과제; 방어 스쿼드 구성. 게임이 종료될 때 튕기는 원인 찾기
+
+
+
+
+
+2017.10.09
+
+
+** 방어 스쿼드 구성
+기존의 방어 스쿼드 구성함수에서
+공격나간 스쿼드를 제외한 모든 combat units을 방어 스쿼드로 구성하도록
+
+* 공격 스쿼드 string : MainAttack
+* SquadData.cpp 내 함수 getSquad() 필요 없는 라인 제거
+Squad & SquadData::getSquad(const std::string & squadName)
+{
+    BOT_ASSERT(squadExists(squadName), "Trying to access squad that doesn't exist: %s", squadName.c_str());
+    if (!squadExists(squadName))
+    {
+        int a = 10;
+    }
+
+    return m_squads.at(squadName);
+}
+에서
+Squad & SquadData::getSquad(const std::string & squadName)
+{
+    BOT_ASSERT(squadExists(squadName), "Trying to access squad that doesn't exist: %s", squadName.c_str());
+
+    return m_squads.at(squadName);
+}
+
+& 모두 CombatCommander 클래스 내
+* onFrame 실행시간 줄이기 위해 isSquadUpdateFrame() 함수 내에서 combat units이 없다면 false를 반환하도록
+bool CombatCommander::isSquadUpdateFrame()
+{
+	if (m_combatUnits.size() < 1) return false;
+	return true;
+}
+	==> onFrame에서 수정 약간 필요, 스카웃 디펜스는 if문 밖으로 나와야함. m_combatUnits이 없어도 동작해야 하기 때문.
+
+* updateDefenceSquadUnits() 함수를 변경. 적의 유닛에 상관없이 방어시도하도록.
+void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t & flyingDefendersNeeded, const size_t & groundDefendersNeeded)
+{
+	auto & squadUnits = defenseSquad.getUnits();
+
+	// TODO: right now this will assign arbitrary defenders, change this so that we make sure they can attack air/ground
+
+	// if there's nothing left to defend, clear the squad
+	if (flyingDefendersNeeded == 0 && groundDefendersNeeded == 0)
+	{
+		defenseSquad.clear();
+		return;
+	}
+
+	size_t defendersNeeded = flyingDefendersNeeded + groundDefendersNeeded;
+	size_t defendersAdded = 0;
+
+	while (defendersNeeded > defendersAdded)
+	{
+		UnitTag defenderToAdd = findClosestDefender(defenseSquad, defenseSquad.getSquadOrder().getPosition());
+
+		if (defenderToAdd)
+		{
+			m_squadData.assignUnitToSquad(defenderToAdd, defenseSquad);
+			defendersAdded++;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+을
+void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t & flyingDefendersNeeded, const size_t & groundDefendersNeeded)
+{
+	auto & squadUnits = defenseSquad.getUnits();
+
+	// TODO: right now this will assign arbitrary defenders, change this so that we make sure they can attack air/ground
+
+	// if there's nothing left to defend, clear the squad
+	if (flyingDefendersNeeded == 0 && groundDefendersNeeded == 0)
+	{
+		defenseSquad.clear();
+		return;
+	}
+
+	size_t defendersNeeded = flyingDefendersNeeded + groundDefendersNeeded;
+	size_t defendersAdded = 0;
+
+	UnitTag defenderToAdd = findClosestDefender(defenseSquad, defenseSquad.getSquadOrder().getPosition());
+
+	if (defenderToAdd)
+	{
+		m_squadData.assignUnitToSquad(defenderToAdd, defenseSquad);
+		defendersAdded++;
+	}
+	
+}
+으로 변경.
+
+
+* findClosestDefender() 함수 안에 for문에서 공격 스쿼드라면 continue
+	--> 이 함수를 사용하지 않고 새로 생성함
+SquadData.h 에 	
+bool			isAttackSquad(const UnitTag & unit) const; 
+추가
+함수 내용
+bool SquadData::isAttackSquad(const UnitTag & unit) const
+{
+	const Squad * unitSquad = getUnitSquad(unit);
+
+	return unitSquad->getName()=="MainAttack";
+}
+
+교정된 updateDefenseSquadUnits() 함수
+void CombatCommander::updateDefenseSquadUnits(Squad & defenseSquad, const size_t & flyingDefendersNeeded, const size_t & groundDefendersNeeded)
+{
+	auto & squadUnits = defenseSquad.getUnits();
+
+	// TODO: right now this will assign arbitrary defenders, change this so that we make sure they can attack air/ground
+
+	// if there's nothing left to defend, clear the squad
+	if (flyingDefendersNeeded == 0 && groundDefendersNeeded == 0)
+	{
+		defenseSquad.clear();
+		return;
+	}
+
+	size_t defendersNeeded = flyingDefendersNeeded + groundDefendersNeeded;
+	size_t defendersAdded = 0;
+
+
+	for (auto & unitTag : m_combatUnits)
+	{
+		auto unit = m_bot.GetUnit(unitTag);
+		BOT_ASSERT(unit, "null combat unit");
+
+		if (!m_squadData.canAssignUnitToSquad(unitTag, defenseSquad)
+			|| (m_squadData.isAttackSquad(*unit))
+			)
+		{
+			continue;
+		}
+
+		m_squadData.assignUnitToSquad(unitTag, defenseSquad);
+	}
+}
+
+* updateDefenseSquads() 함수 내, 공중 유닛, 지상유닛 숫자 변수 관련된 함수 모두 차단. 아직은 안쓰므로 주석처리만 해둠.
+void CombatCommander::updateDefenseSquads()
+{
+	if (m_combatUnits.empty())
+	{
+		return;
+	}
+
+	// for each of our occupied regions
+	const BaseLocation * enemyBaseLocation = m_bot.Bases().getPlayerStartingBaseLocation(Players::Enemy);
+	for (const BaseLocation * myBaseLocation : m_bot.Bases().getOccupiedBaseLocations(Players::Self))
+	{
+		// don't defend inside the enemy region, this will end badly when we are stealing gas or cannon rushing
+		if (myBaseLocation == enemyBaseLocation)
+		{
+			continue;
+		}
+
+		sc2::Point2D basePosition = myBaseLocation->getPosition();
+
+		// start off assuming all enemy units in region are just workers
+		int numDefendersPerEnemyUnit = 2;
+
+		// all of the enemy units in this region
+		std::vector<UnitTag> enemyUnitsInRegion;
+		for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
+		{
+			// if it's an overlord, don't worry about it for defense, we don't care what they see
+			if (unit.unit_type == sc2::UNIT_TYPEID::ZERG_OVERLORD)
+			{
+				continue;
+			}
+
+			if (myBaseLocation->containsPosition(unit.pos))
+			{
+				enemyUnitsInRegion.push_back(unit.tag);
+			}
+		}
+
+		// we can ignore the first enemy worker in our region since we assume it is a scout
+		for (auto & unitTag : enemyUnitsInRegion)
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null enemyt unit in region");
+
+			if (Util::IsWorker(*unit))
+			{
+				enemyUnitsInRegion.erase(std::remove(enemyUnitsInRegion.begin(), enemyUnitsInRegion.end(), unitTag), enemyUnitsInRegion.end());
+				break;
+			}
+		}
+
+		// calculate how many units are flying / ground units
+/*		int numEnemyFlyingInRegion = 0;
+		int numEnemyGroundInRegion = 0;
+		for (auto & unitTag : enemyUnitsInRegion)
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null enemyt unit in region");
+
+			if (unit->is_flying)
+			{
+				numEnemyFlyingInRegion++;
+			}
+			else
+			{
+				numEnemyGroundInRegion++;
+			}
+		}*/
+
+
+		std::stringstream squadName;
+		squadName << "Base Defense " << basePosition.x << " " << basePosition.y;
+
+		// if there's nothing in this region to worry about
+		if (enemyUnitsInRegion.empty())
+		{
+			// if a defense squad for this region exists, remove it
+			if (m_squadData.squadExists(squadName.str()))
+			{
+				m_squadData.getSquad(squadName.str()).clear();
+			}
+
+			// and return, nothing to defend here
+			continue;
+		}
+		else
+		{
+			// if we don't have a squad assigned to this region already, create one
+			if (!m_squadData.squadExists(squadName.str()))
+			{
+				SquadOrder defendRegion(SquadOrderTypes::Defend, basePosition, 32 * 25, "Defend Region!");
+				m_squadData.addSquad(squadName.str(), Squad(squadName.str(), defendRegion, BaseDefensePriority, m_bot));
+			}
+		}
+
+		// assign units to the squad
+		if (m_squadData.squadExists(squadName.str()))
+		{
+			Squad & defenseSquad = m_squadData.getSquad(squadName.str());
+
+			// figure out how many units we need on defense
+	//		int flyingDefendersNeeded = numDefendersPerEnemyUnit * numEnemyFlyingInRegion;
+	//		int groundDefensersNeeded = numDefendersPerEnemyUnit * numEnemyGroundInRegion;
+
+	//		updateDefenseSquadUnits(defenseSquad, flyingDefendersNeeded, groundDefensersNeeded);
+			updateDefenseSquadUnits(defenseSquad, 0, 0);
+		}
+		else
+		{
+			BOT_ASSERT(false, "Squad should have existed: %s", squadName.str().c_str());
+		}
+	}
+
+	// for each of our defense squads, if there aren't any enemy units near the position, remove the squad
+	std::set<std::string> uselessDefenseSquads;
+	for (const auto & kv : m_squadData.getSquads())
+	{
+		const Squad & squad = kv.second;
+		const SquadOrder & order = squad.getSquadOrder();
+
+		if (order.getType() != SquadOrderTypes::Defend)
+		{
+			continue;
+		}
+
+		bool enemyUnitInRange = false;
+		for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
+		{
+			if (Util::Dist(unit.pos, order.getPosition()) < order.getRadius())
+			{
+				enemyUnitInRange = true;
+				break;
+			}
+		}
+
+		if (!enemyUnitInRange)
+		{
+			m_squadData.getSquad(squad.getName()).clear();
+		}
+	}
+}
+
+
+// 방어 스쿼드 콘솔 프린트하면서 확인
+295	디펜스
+52	컴뱃
+114	공격
+
+
+* 방어 스쿼드가 완성되지 않는 이유. getOccupiedBaseLocations()의 size 값이 0. --> for문이 동작하지 않는다.
+- BaseLocationManager.cpp 내 onFrame()에서 
+for (auto & baseLocation : m_baseLocationData)
+    {
+        baseLocation.setPlayerOccupying(Players::Self, false);
+        baseLocation.setPlayerOccupying(Players::Self, false);
+    }
+가 두개가 있으므로 하나 제거
+    for (auto & baseLocation : m_baseLocationData)
+    {
+        baseLocation.setPlayerOccupying(Players::Self, false);
+    //    baseLocation.setPlayerOccupying(Players::Self, false);
+    }
+
+- 동맹 없으니까 
+BaseLocationManager.cpp line 149~
+/*    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
+    {
+        // we only care about buildings on the ground
+        if (!m_bot.Data(unit.unit_type).isBuilding || unit.is_flying)
+        {
+            continue;
+        }
+
+        BaseLocation * baseLocation = getBaseLocation(unit.pos);
+
+        if (baseLocation != nullptr)
+        {
+            baseLocation->setPlayerOccupying(Util::GetPlayer(unit), true);
+        }
+    }*/
+주석처리
+
+
+
+/******************* 오류
+!Assert:   unit
+File:      c:\users\xonao\dropbox\sc2\commandcenter-master\commandcenter-master\src\squad.cpp
+Message:   null unit in squad clear
+Line:      171
+Time:      08-10-2017 22-53-54
+/**************************
+==> 유닛이 죽으면 스쿼드 클리어? 그런 문제같은데..
+ProductionManager.cpp onUnitDestroy() 함수. 아마도 유닛 프리해주는 함수?
+
+
+
+테스트
+1.
+    // reset the player occupation information for each location
+    for (auto & baseLocation : m_baseLocationData)
+    {
+        baseLocation.setPlayerOccupying(Players::Self, false);
+        baseLocation.setPlayerOccupying(Players::Enemy, false);
+    }
+
+2. BaseLocationManager.cpp -> onFrame()
+	// update our base occupations;
+	for (auto & baseLocation : m_baseLocationData)
+	{
+		if (baseLocation.isPlayerStartLocation(Players::Self))
+		{
+			baseLocation.setPlayerOccupying(Players::Self, true);
+		}
+	}
+추가
+
+3. 감지 거리 증가 BaseLocation.cpp
+const int NearBaseLocationTileDistance = 40;
+
+**** BaseLocationManager에서 나중에 건물이 부서져서 스타팅포인트가 바뀌거나 하는 경우를 대비하여
+파괴되었을때 값들을 리셋해주는 함수를 만들어야한다.
+
+
+**** 나중에 공격 위치 정할때는 CombatCommander.cpp의 updateAttackSquads()에서 생성하는 SquadOrder mainAttackOrder 의 변수를 체크
+
+
+
+***************** 오류
+다른건물보다 타운홀이 먼저 박살나면, 튕긴다.
+*****************
+
+다음 과제; 프로토스 빌드 완성. 일꾼 정찰 막은후에 돌아오도록하기(멀리서 돈캐지말기)
+		, 이미 공격 떠나면 후발대가 따라붙지 않도록. 공격중 신호를 끄면된다
+		, 공격 중인 공격대가 회군하지 않도록. (오늘 하려했는데 실패한 것)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***************************
+2017. 10. 24
+
+!Assert:   unit
+File:      c:\users\xonao\dropbox\sc2\commandcenter-master\commandcenter-master\src\squad.cpp
+Message:   null unit in squad clear
+Line:      171
+Time:      24-10-2017 12-23-58
+
+
+==> 방법1. exception handling
+** Squad.cpp
+- clear()
+
+void Squad::clear()
+{
+    for (auto & unitTag : getUnits())
+    {
+        auto unit = m_bot.GetUnit(unitTag);
+   //     BOT_ASSERT(unit, "null unit in squad clear");
+		try {
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
+    }
+
+    m_units.clear();
+}
+
+
+- squadUnitsNear()
+int Squad::squadUnitsNear(const sc2::Point2D & p) const
+{
+    int numUnits = 0;
+
+    for (auto & unitTag : m_units)
+    {
+        auto unit = m_bot.GetUnit(unitTag);
+    //    BOT_ASSERT(unit, "null unit");
+
+		try {
+			if (unit == nullptr) throw unit;
+			if (Util::Dist(unit->pos, p) < 20.0f)
+			{
+				numUnits++;
+			}
+		}
+		catch (int exception) {
+			std::cout << "unit is null\n";
+		}
+    }
+
+    return numUnits;
+}
+ 	
+
+
+
+
+// 에러 //////////
+BaseLocation Error
+==> 주석처리 해제 ( 원래 주석처리 했었음) -- 다른 멀티 깨질때 문제 해결
+    // for each unit on the map, update which base location it may be occupying
+    for (auto & unit : m_bot.Observation()->GetUnits(sc2::Unit::Alliance::Ally))
+    {
+        // we only care about buildings on the ground
+        if (!m_bot.Data(unit.unit_type).isBuilding || unit.is_flying)
+        {
+            continue;
+        }
+
+        BaseLocation * baseLocation = getBaseLocation(unit.pos);
+
+        if (baseLocation != nullptr)
+        {
+            baseLocation->setPlayerOccupying(Util::GetPlayer(unit), true);
+        }
+    }
+
+==> drawBaseLocations() 함수 문제
+    // draw a purple sphere at the next expansion location
+	try {
+		sc2::Point2D nextExpansionPosition = getNextExpansion(Players::Self);
+		m_bot.Map().drawSphere(nextExpansionPosition, 1, sc2::Colors::Purple);
+		m_bot.Map().drawText(nextExpansionPosition, "Next Expansion Location", sc2::Colors::Purple);
+	}
+	catch (int e) {
+		std::cout << "get error() draw baselocation" << std::endl;
+	}
+함수 내에서 예외처리 시작
+	--> getNextExpansion() 함수 내에 throw 추가
+	--> if (homeBase == nullptr) throw homeBase;
+틀림
+다시
+===> 일단 보류 ************************************************** -->> BaseLocationManager.onFrame() 첫 번째 메서드 drawBaseLocations() 주석처리
+
+
+// 에러 //////////////////
+** CCBot에서 GetUnit()에서 에러
+UnitTag 값이 적절하지 않다고 함
+--> 일단 예외처리
+const sc2::Unit * CCBot::GetUnit(const UnitTag & tag) const
+{
+	try {
+		if (tag == NULL) throw tag;
+		return Observation()->GetUnit(tag);
+	}
+	catch (int e) {
+		std::cout << "get error , at GetUnit() in CCBot\n";
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*********************************************************************************************************************
+2017. 10. 25
+CCBot - getUnit 고치기
+
+
+
+*********************************************************************************************************************
+
+2017. 10. 26
+1. 일꾼 정찰 방어 범위 좁히기
+BaseLocation 의 함수 변경 계획
+bool containsPosition(const sc2::Point2D & pos) const;
+을 -->
+bool containsPosition(const sc2::Point2D & pos, int situation) const;
+// add
+// 0 - worker defence 
+// 1 -- combat defence
+bool BaseLocation::containsPosition(const sc2::Point2D & pos, int situation) const
+{
+	if (!m_bot.Map().isValid(pos) || (pos.x == 0 && pos.y == 0))
+	{
+		return false;
+	}
+
+	if(situation==0) return getGroundDistance(pos) < NearBaseLocationTileDistance / 4;
+	return getGroundDistance(pos) < NearBaseLocationTileDistance;
+}
+
+===> CombatCommander의 UpdateScoutDefenceSquad()의 내부
+	// get all of the enemy units in this region
+	std::vector<UnitTag> enemyUnitsInRegion;
+	for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
+	{
+		if (myBaseLocation->containsPosition(unit.pos, 0))
+		{
+			enemyUnitsInRegion.push_back(unit);
+		}
+	}
+으로 변경
+
+
+
+
+
+2. 일꾼 러쉬 막기
+
+Squad에 size() 함수 추가
+int	 size() const;
+==>
+// add
+int	Squad::size() const
+{
+	return m_units.size();
+}
+
+- CombatCommander 에 일꾼 막는 스쿼드 ( 구 scoutDefenceSquad )
+
+
+
+
+
+3. 일꾼은 일꾼으로만 막기
+		UnitTag workerDefenderTag;
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+/*		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}*/
+
+
+
+
+
+==> updateScoutDefenseSquad() 내 수정
+- 블록
+	// if our current squad is empty and we should assign a worker, do it
+/*	if (workerDefenseSquad.isEmpty() && assignScoutDefender)
+	{
+		// the enemy worker that is attacking us
+		UnitTag enemyWorkerTag = *enemyWorkersInRegion.begin();
+		auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
+		BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
+
+		UnitTag workerDefenderTag;
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}
+
+		if (enemyWorkerTag && workerDefenderTag)
+		{
+			// grab it from the worker manager and put it in the squad
+			if (m_squadData.canAssignUnitToSquad(workerDefenderTag, workerDefenseSquad))
+			{
+				m_bot.Workers().setCombatWorker(workerDefenderTag);
+				m_squadData.assignUnitToSquad(workerDefenderTag, workerDefenseSquad);
+			}
+		}
+	}
+	// if our squad is not empty and we shouldn't have a worker chasing then take him out of the squad
+	else if (!workerDefenseSquad.isEmpty() && !assignScoutDefender)
+	{
+		for (auto & unitTag : workerDefenseSquad.getUnits())
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null unit in scoutDefenseSquad");
+
+			Micro::SmartStop(unitTag, m_bot);
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+
+		workerDefenseSquad.clear();
+	}
+	*/
+
+
+
+====> updateWorkerDefenseSquad() 으로 이름 변경
+최종 버전
+void CombatCommander::updateWorkerDefenseSquad()
+{
+	// if the current squad has units in it then we can ignore this
+	Squad & workerDefenseSquad = m_squadData.getSquad("ScoutDefense");
+
+	// get the region that our base is located in
+	const BaseLocation * myBaseLocation = m_bot.Bases().getPlayerStartingBaseLocation(Players::Self);
+	BOT_ASSERT(myBaseLocation, "null self base location");
+
+	// get all of the enemy units in this region
+	std::vector<UnitTag> enemyWorkersInRegion;
+	for (auto & unit : m_bot.UnitInfo().getUnits(Players::Enemy))
+	{
+		if (myBaseLocation->containsPosition(unit.pos, 0) && Util::IsWorker(*m_bot.GetUnit(unit)))
+		{
+			enemyWorkersInRegion.push_back(unit);
+		}
+	}
+
+	// if there's an enemy worker in our region then assign someone to chase him
+//	bool assignScoutDefender = (enemyWorkersInRegion.size() == 1);
+
+	// get a workerDefenceSquad
+	std::cout << "my workers : " << workerDefenseSquad.size() << ", enemy workers : " << enemyWorkersInRegion.size() << std::endl;
+	if (workerDefenseSquad.size() <= enemyWorkersInRegion.size()) {
+		for (UnitTag enemyWorkerTag : enemyWorkersInRegion) {
+			//	UnitTag enemyWorkerTag = enemyWorkersInRegion[i];
+			auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
+			BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
+
+			UnitTag workerDefenderTag;
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+
+			if (enemyWorkerTag && workerDefenderTag)
+			{
+				// grab it from the worker manager and put it in the squad
+				if (m_squadData.canAssignUnitToSquad(workerDefenderTag, workerDefenseSquad))
+				{
+					m_bot.Workers().setCombatWorker(workerDefenderTag);
+					m_squadData.assignUnitToSquad(workerDefenderTag, workerDefenseSquad);
+				}
+			}
+
+		}
+	}
+	
+	// renew the workerDefenceSquad
+	if (!workerDefenseSquad.isEmpty() && enemyWorkersInRegion.size()==0)
+	{
+		for (auto & unitTag : workerDefenseSquad.getUnits())
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null unit in scoutDefenseSquad");
+
+			Micro::SmartStop(unitTag, m_bot);
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+
+		workerDefenseSquad.clear();
+	}
+
+	// if our current squad is empty and we should assign a worker, do it
+/*	if (workerDefenseSquad.isEmpty() && assignScoutDefender)
+	{
+		// the enemy worker that is attacking us
+		UnitTag enemyWorkerTag = *enemyWorkersInRegion.begin();
+		auto enemyWorkerUnit = m_bot.GetUnit(enemyWorkerTag);
+		BOT_ASSERT(enemyWorkerUnit, "null enemy worker unit");
+
+		UnitTag workerDefenderTag;
+		// get our worker unit that is mining that is closest to it
+		//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+		workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		if (m_combatUnits.empty())
+		{
+			// get our worker unit that is mining that is closest to it
+			//        UnitTag workerDefenderTag = findClosestWorkerTo(m_combatUnits, enemyWorkerUnit->pos);
+			workerDefenderTag = findClosestWorkerTo(enemyWorkerUnit->pos);
+		}
+
+		else
+		{
+			workerDefenderTag = findClosestCombatTo(m_combatUnits, enemyWorkerUnit->pos);
+		}
+
+		if (enemyWorkerTag && workerDefenderTag)
+		{
+			// grab it from the worker manager and put it in the squad
+			if (m_squadData.canAssignUnitToSquad(workerDefenderTag, workerDefenseSquad))
+			{
+				m_bot.Workers().setCombatWorker(workerDefenderTag);
+				m_squadData.assignUnitToSquad(workerDefenderTag, workerDefenseSquad);
+			}
+		}
+	}
+	// if our squad is not empty and we shouldn't have a worker chasing then take him out of the squad
+	else if (!workerDefenseSquad.isEmpty() && !assignScoutDefender)
+	{
+		for (auto & unitTag : workerDefenseSquad.getUnits())
+		{
+			auto unit = m_bot.GetUnit(unitTag);
+			BOT_ASSERT(unit, "null unit in scoutDefenseSquad");
+
+			Micro::SmartStop(unitTag, m_bot);
+			if (Util::IsWorker(*unit))
+			{
+				m_bot.Workers().finishedWithWorker(unitTag);
+			}
+		}
+
+		workerDefenseSquad.clear();
+	}
+	*/
+}
+
+
+
+
+
+
+
+
+
+
+
+2017. 11 .1 
+1. 일꾼 러쉬
+1) 보고서 참조
+
+
+** CombatCommander의 updateDefenseSquadUnits() 함수 초반에 일꾼이면 방어 스쿼드로 구성하지 않도록
+// add
+		if (Util::IsWorker(*unit)) continue;
+
+
+
+2. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2017.11.4
+테스터 만들기
+Tester 클래스를 XelsNaga를 상속받아 만들기
+XelsNaga의 변수들을 protected로 변경
+
+main에서 Tester봇을 먼저 변수로 두기 
+--> 그래야 컨트롤이 가능해짐
+
+
+
+
+
+
+
+
+
+
+
+2017. 11. 7 
+파일런 스페이싱
+BuildPlacer.cpp
+
+1. 미네랄 사이에 건물 안짓도록
+bool BuildingPlacer::isInResourceBox(int x, int y) const
+{
+ //   return false;
+    return m_bot.Bases().getPlayerStartingBaseLocation(Players::Self)->isInResourceBox(x, y);
+}
+
+항상 return false하던 것 블록
+
+
+2. 파일런은 공간을 넓게
+canBuildHereWithSpace() 내부
+    // if we can't build here, or space is reserved, or it's in the resource box, we can't build here
+	if (b.type == sc2::UNIT_TYPEID::PROTOSS_PYLON)
+	{	
+		for (int x = startx - 2; x < endx + 2; x += 2)
+		{
+			for (int y = starty - 2; y < endy + 2; y += 2)
+			{
+				if (!Util::IsRefineryType(b.type))
+				{
+					if (!buildable(b, x, y) || m_reserveMap[x][y])
+					{
+						
+						return false;
+					}
+				}
+			}
+		}
+	}
+	else {
+		for (int x = startx; x < endx; x++)
+		{
+			for (int y = starty; y < endy; y++)
+			{
+				if (!Util::IsRefineryType(b.type))
+				{
+					if (!buildable(b, x, y) || m_reserveMap[x][y])
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+
+
+
+
+일꾼 - combatUnit 처리
+공격 조건이 만족되기 전까지는 combatUnit에 입력하지 않는다.
+GameCommander 클래스
+--> 두개의 솔루션
+우선 일꾼의 combat type을 false로
+
+bool Util::IsCombatUnitType(const sc2::UnitTypeID & type, XelsNaga & bot)
+{
+    if (IsWorkerType(type)) { return false; }
+    if (IsSupplyProviderType(type)) { return false; }
+    if (bot.Data(type).isBuilding) { return false; }
+
+    if (type == sc2::UNIT_TYPEID::ZERG_EGG) { return false; }
+    if (type == sc2::UNIT_TYPEID::ZERG_LARVA) { return false; }
+
+    return true;
+}
+
+==> GameCommander 내 함수
+// sets combat units to be passed to CombatCommander
+void GameCommander::setCombatUnits()
+{
+    for (auto & unitTag : m_validUnits)
+    {
+        const sc2::Unit * unit = m_bot.GetUnit(unitTag);
+
+        BOT_ASSERT(unit, "Have a null unit in our valid units\n");
+
+		// solution 1
+		// set workers combat type is true
+    /*    if (!isAssigned(unitTag) && Util::IsCombatUnitType(unit->unit_type, m_bot))
+        {
+			if (Util::IsWorker(*unit) && m_validUnits.size() < m_bot.Config().CombatUnitsForAttack);
+			else assignUnit(unitTag, m_combatUnits);
+        }
+		*/
+
+		// solution 2
+		// set workers combat type is false
+		if (!isAssigned(unitTag)) 
+		{
+			if (Util::IsCombatUnitType(unit->unit_type, m_bot))
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+			else if (Util::IsWorker(*unit) && m_validUnits.size() >= m_bot.Config().CombatUnitsForAttack)
+			{
+				assignUnit(unitTag, m_combatUnits);
+			}
+		}
+    }
+}
+
+
+
+-------------------
+2017. 12. 4
